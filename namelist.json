@@ -1,0 +1,12 @@
+{
+    "lx"    : 8218.0,
+    "ly"    : 5800.0,
+    "lz"    : 1000.0,
+    "nx"    : 513,
+    "ny"    : 385,
+    "nz"    : 193,
+    "UPath" : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_U_mean_0030000.dat",
+    "VPath" : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_V_mean_0030000.dat",
+    "WPath" : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_W_mean_0030000.dat"
+}
+
