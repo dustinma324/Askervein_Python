@@ -3,55 +3,71 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from ASKfunction import Settings, Utils
+from ASKfunction import Settings, Utils, Plots
 
-# Enviorment Setup
+####################### Enviorment Setup #######################
 utils = Utils()
+plots = Plots()
 settings = Settings('namelist.json')
 
-# Import plot lines and simulation data 
-AALine = pd.read_csv(settings.AA, header=None)
-ALine  = pd.read_csv(settings.A,  header=None)
-BLine  = pd.read_csv(settings.B,  header=None)
-Udata = np.loadtxt(settings.U)
-Vdata = np.loadtxt(settings.V)
-Wdata = np.loadtxt(settings.W)
-
-# Need to include RS and HT vertical profile line
 # Setting up simulation parameters
-nx = settings.nx; ny = settings.ny; nz = settings.nz
 lx = settings.lx; ly = settings.ly; lz = settings.lz
-X = np.linspace(0,lx,nx)
-Y = np.linspace(0,ly,ny)
-Z = np.linspace(0,lz,nz)
+nx = settings.nxMesh2; ny = settings.nyMesh2; nz = settings.nzMesh2
+X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 
-# Definind Mesh Grid (Figure out how to use this with contourf)
+# Important site locations
+RS = settings.RS; HT = settings.HT; CP = settings.CP
+
+# Definind Mesh Grid
 xzx, xzz = np.meshgrid(X,Z,indexing='xy')
 xyx, xyy = np.meshgrid(X,Y,indexing='xy')
 yzy, yzz = np.meshgrid(Y,Z,indexing='xy')
 
-# Defining matrix size for important mean variables
-u = np.zeros((nx,ny,nz))
-v = np.zeros((nx,ny,nz))
-w = np.zeros((nx,ny,nz))
-mag = np.zeros((nx,ny,nz))
+####################### Loading Data #######################
+# Reading speedup lines
+AALine = pd.read_csv(settings.AA, header=None)
+ALine  = pd.read_csv(settings.A,  header=None)
+BLine  = pd.read_csv(settings.B,  header=None)
 
-# Reading Mesh
-utils.readMesh(Udata,Vdata,Wdata,u,v,w,nx,ny,nz)
+# Creating RS and HT vertical lines
+RSLine = utils.createVerticalLine(RS[0],RS[1],lz,nz*2,RS[2]-10)
+HTLine = utils.createVerticalLine(HT[0],HT[1],lz,nz*2,HT[2]-10)
 
-# Calculate mean magnitude
-utils.calcMag(mag,u,v,w,nx,ny,nz)
+# Reading GIN3D simulation results
+Udata = np.loadtxt(settings.U)
+Vdata = np.loadtxt(settings.V)
+Wdata = np.loadtxt(settings.W)
+u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
 
-# Plotting contour
-#fig1 = plt.contourf(mag[:,:,20].T)
-#plt.show(fig1)
-#fig2 = plt.contourf(mag[:,192,:].T)
-#plt.show(fig2)
+####################### Calculations #######################
+# Calculate mean velocity magnitude 
+mag = utils.calcMag(u,v,w,nx,ny,nz)
 
 # Interpolation of non-coinciding points
-AAinterp = np.zeros(len(AALine))
-Ainterp  = np.zeros(len(ALine))
-Binterp  = np.zeros(len(BLine))
-utils.trilinearInterpolation(mag,X,Y,Z,AALine,AAinterp)
-utils.trilinearInterpolation(mag,X,Y,Z,ALine,Ainterp)
-utils.trilinearInterpolation(mag,X,Y,Z,BLine,Binterp)
+AAinterp  = utils.trilinearInterpolation(mag,X,Y,Z,AALine)
+Ainterp   = utils.trilinearInterpolation(mag,X,Y,Z,ALine)
+Binterp   = utils.trilinearInterpolation(mag,X,Y,Z,BLine)
+RSprofile = utils.trilinearInterpolation(mag,X,Y,Z,RSLine)
+HTprofile = utils.trilinearInterpolation(mag,X,Y,Z,HTLine)
+RS10m     = utils.trilinearInterpolation(mag,X,Y,Z,RS)
+
+# Remove zero values and arange RS and HT by height above ground
+RSprofile, RSLine = utils.convert2agl(RSprofile,RSLine,RS[2]-10.0)
+HTprofile, HTLine = utils.convert2agl(HTprofile,HTLine,HT[2]-10.0)
+
+####################### Plotting #######################
+# Contour
+plots.plotContourf(xyx,xyy,mag[:,:,20].T,"XY Plane","X","Y")
+plots.plotContourf(xzx,xzz,mag[:,192,:].T,"XZ Plane","X","Z")
+
+# AA, A, and B lines vs Distance to HT or CP
+plots.plotFigure(AALine[0]-CP[0],(AAinterp-RS10m)/RS10m,"AA Line","Distance from CP","$\Delta$ S")
+plots.plotFigure( ALine[0]-HT[0],( Ainterp-RS10m)/RS10m, "A Line","Distance from HT","$\Delta$ S")
+#plots.plotFigure(,Binterp,"B Line"," ","$\Delta$ S")
+
+# RS and HT vs Z
+plots.plotSemilogy(RSprofile,RSLine[:,2],"RS","Mean Velocity ($ms^{-1}$)","$h_{agl}$ (m)")
+plots.plotFigure(HTprofile,HTLine[:,2],"HT","$\Delta$ S","$h_{agl}$ (m)")
+
+# Show all figures
+plt.show()
