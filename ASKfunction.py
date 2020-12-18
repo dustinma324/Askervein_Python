@@ -2,7 +2,7 @@ import json
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from scipy.interpolate import RegularGridInterpolator
+from scipy import interpolate
 
 class Settings:
   def __init__(self,namelist):
@@ -53,12 +53,6 @@ class Utils:
           mag[i,j,k] = np.sqrt(u[i,j,k]**2 + v[i,j,k]**2 + w[i,j,k]**2)
     return mag
 
-  # scipy trilinear interpolation to find values along data lines
-  def trilinearInterpolation(self,vel,x,y,z,line):
-
-    rgi = RegularGridInterpolator((x,y,z),vel)
-    return rgi((line))
-
   # create vertical line given a specific X and Y location
   def createVerticalLine(self,x_val,y_val,lz,resolution,z0):
     array = np.ones((resolution,2))
@@ -67,39 +61,53 @@ class Utils:
     array = np.concatenate((array,tmp),1)
     return array
 
-  def convert2agl(self,profile,line,z0):
-    tmp_idx = np.argwhere(profile)
-    tmp_profile = np.zeros(len(tmp_idx)-1)
-    tmp_line = np.zeros((len(tmp_idx)-1,3))
+  def removeLastElement(self,profile,line,z0):
+    profile = profile[0:-2]
+    line[:,2] = line[:,2]-z0
+    line = line[0:-2,:]
+    return profile, line
 
-    for i in range(len(tmp_idx)-1):
-      tmp_profile[i] = profile[tmp_idx[i]]
-      tmp_line[i] = line[tmp_idx[i],:]
-    tmp_line[:,2] = tmp_line[:,2] - z0
-    return tmp_profile, tmp_line
+  # scipy trilinear interpolation to find values along data lines
+  def trilinearInterpolation(self,vel,x,y,z,line):
+    rgi = interpolate.RegularGridInterpolator((x,y,z),vel)
+    return rgi((line))
+
+  def linearInterpolation(self,z,data,line):
+    f = interpolate.interp1d(z, data)
+    return f((line))
 
 class Plots:
 
   # lineplots
   def plotFigure(self,x,y,title,xtitle,ytitle):
-
-    fig = plt.figure()
-    ax = plt.gca()
-    ax.plot(x,y)
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
-
-  # lineplots
-  def plotSemilogy(self,x,y,title,xtitle,ytitle):
-
-    fig = plt.figure()
-    ax = plt.gca()
-    ax.semilogy(x,y)
+    fig = plt.figure(); ax = plt.gca()
+    ax.plot(x,y,"g-",label="GIN3D",linewidth=2)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
 
   # contours
   def plotContourf(self,x,y,data,title,xtitle,ytitle):
-
     fig = plt.figure(); ax = plt.gca()
     t = ax.contourf(x,y,data)
     fig.colorbar(t)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+
+  # HT Line
+  def plotHT(self,x,y,title,xtitle,ytitle):
+    fig = plt.figure(); ax = plt.gca()
+    ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    plt.xlim(0.0,1.6); plt.ylim(0,100)
+    plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
+
+  # RS line
+  def plotRS(self,x,y,title,xtitle,ytitle):
+    yloglaw = np.linspace(0,1000,1000)
+    roughloglaw = 0.654/0.41 * np.log(yloglaw/0.03)
+
+    fig = plt.figure(); ax = plt.gca()
+    ax.semilogy(roughloglaw, yloglaw,"k-", label="LogLaw",linewidth=2)
+    ax.semilogy(x,y,"r-",label="GIN3D",linewidth=2)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    ax.legend(loc="upper left")
+    plt.xlim(0.0,20); plt.ylim(10e0,10e2)
+    plt.xticks(np.arange(0,20+5,5))

@@ -5,9 +5,9 @@
     "UPath"  : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_U_mean_0030000.dat",
     "VPath"  : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_V_mean_0030000.dat",
     "WPath"  : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_W_mean_0030000.dat",
-    "AALine" : "/home/dustin/Desktop/Askervein/Data/GIN3D_DMa/Streamwise/AALineProfileAdjust_stream.csv",
-    "ALine"  : "/home/dustin/Desktop/Askervein/Data/GIN3D_DMa/Streamwise/ALineProfileAdjust_stream.csv",
-    "BLine"  : "/home/dustin/Desktop/Askervein/Data/GIN3D_DMa/Streamwise/BLineProfileAdjust_stream.csv",
+    "AALine" : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/AALineProfileAdjust_stream.csv",
+    "ALine"  : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/ALineProfileAdjust_stream.csv",
+    "BLine"  : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/BLineProfileAdjust_stream.csv",
     "RS"     : [2625.8, 2900, 24.7],
     "HT"     : [4708.7, 3156.8, 146.54],
     "CP"     : [4620.2, 2765.6, 139.19],
@@ -18,9 +18,9 @@
       "nz"     : 193
     },
     "Mesh3"  : {
-      "nx"     :641,
-      "ny"     :513,
-      "nz"     :257
+      "nx"     : 641,
+      "ny"     : 513,
+      "nz"     : 257
     }
 }
 
