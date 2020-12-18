@@ -15,7 +15,7 @@
     },
 
     "Streamwise"  : {
-      "FigurePath" : "/home/dustin/Desktop/Askervein/askervein_Python/Figures/",
+      "FigurePath" : "/home/dustin/Desktop/Askervein/askervein_Python/figures/",
       "UPath"      : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_U_mean_0030000.dat",
       "VPath"      : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_V_mean_0030000.dat",
       "WPath"      : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_W_mean_0030000.dat",

@@ -101,22 +101,32 @@ class Plots:
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
 
   # lineplots
-  def plotFigure(self,x,y,title,xtitle,ytitle,xlim,ylim):
+  def plotFigure(self,x,y,title,xtitle,ytitle,xlim,ylim,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"g-",label="GIN3D",linewidth=2)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
 
+    fig.savefig(settings.figurePath+filename,dpi=1200)
+
   # HT line
-  def plotHT(self,x,y,title,xtitle,ytitle):
+  def plotHT(self,x,y,title,xtitle,ytitle,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     plt.xlim(0.0,1.6); plt.ylim(0,100)
     plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
 
+    fig.savefig(settings.figurePath+filename,dpi=1200)
+
   # RS line
-  def plotRS(self,x,y,title,xtitle,ytitle):
+  def plotRS(self,x,y,title,xtitle,ytitle,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
     yloglaw = np.linspace(0,1000,1000)
     roughloglaw = 0.654/0.41 * np.log(yloglaw/0.03)
 
@@ -127,3 +137,5 @@ class Plots:
     ax.legend(loc="upper left")
     plt.xlim(0.0,20.0); plt.ylim(10e0,10e2)
     plt.xticks(np.arange(0,20+5,5))
+
+    fig.savefig(settings.figurePath+filename,dpi=1200)
