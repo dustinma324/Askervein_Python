@@ -1,8 +1,10 @@
 import json
 import numpy as np
+import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from scipy import interpolate
+from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 class Settings:
   def __init__(self,namelist):
@@ -20,9 +22,9 @@ class Settings:
     self.nyMesh3  = data["Mesh3"]["ny"]
     self.nzMesh3  = data["Mesh3"]["nz"]
 
-    self.streamU   = data["Streamwise"]["UPath"]
-    self.streamV   = data["Streamwise"]["VPath"]
-    self.streamW   = data["Streamwise"]["WPath"]
+    self.streamU   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanU"]
+    self.streamV   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanV"]
+    self.streamW   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanW"]
     self.streamAA  = data["Streamwise"]["AALine"]
     self.streamA   = data["Streamwise"]["ALine"]
     self.streamB   = data["Streamwise"]["BLine"]
@@ -30,9 +32,46 @@ class Settings:
     self.streamHT  = data["Streamwise"]["HT"]
     self.streamCP  = data["Streamwise"]["CP"]
 
-    self.figurePath = data["Streamwise"]["FigurePath"]
+    self.FD_AAR    = data["FieldData"]["Path"]+data["FieldData"]["AAResults"]
+    self.FD_AR     = data["FieldData"]["Path"]+data["FieldData"]["AResults"]
+    self.FD_BR     = data["FieldData"]["Path"]+data["FieldData"]["BResults"]
+    self.FD_AAErr  = data["FieldData"]["Path"]+data["FieldData"]["AAError"]
+    self.FD_AErr   = data["FieldData"]["Path"]+data["FieldData"]["AError"]
+    self.FD_BErr   = data["FieldData"]["Path"]+data["FieldData"]["BError"]
+    self.FD_RSKite = data["FieldData"]["Path"]+data["FieldData"]["RSKite"]
+    self.FD_RSCup  = data["FieldData"]["Path"]+data["FieldData"]["RSCup"]
+    self.FD_RSGill = data["FieldData"]["Path"]+data["FieldData"]["RSGill"]
+
+    self.figurePath = data["FigurePath"]
 
 class Utils:
+
+  # reading field data (Do not change)
+  def readField(self):
+    settings = Settings('namelist.json')
+    aaResults = np.array(pd.read_csv(settings.FD_AAR))
+    aaErr = np.array(pd.read_csv(settings.FD_AAErr))
+    aResults = np.array(pd.read_csv(settings.FD_AR))
+    aErr = np.array(pd.read_csv(settings.FD_AErr))
+    bResults = np.array(pd.read_csv(settings.FD_BR))
+    bErr = np.array(pd.read_csv(settings.FD_BErr))
+    rsKite = np.array(pd.read_csv(settings.FD_RSKite))
+    rsCup = np.array(pd.read_csv(settings.FD_RSCup))
+    rsGill = np.array(pd.read_csv(settings.FD_RSGill))
+
+    # Store these arrays
+    results = {
+      "AAResults" : aaResults,
+      "AResults"  : aResults,
+      "BResults"  : bResults,
+      "AAError"   : aaErr,
+      "AError"    : aErr,
+      "BError"    : bErr,
+      "RSKite"    : rsKite,
+      "RSCup"     : rsCup,
+      "RSGill"    : rsGill
+    }
+    return results
 
   # reading the dot data file to put into 3d matrix
   def readMesh(self,Udata,Vdata,Wdata,nx,ny,nz):
@@ -82,11 +121,14 @@ class Utils:
     line = line[0:-2,:]
     return profile, line
 
+class Interp:
+
   # scipy trilinear interpolation to find values along data lines
   def trilinearInterpolation(self,vel,x,y,z,line):
     rgi = interpolate.RegularGridInterpolator((x,y,z),vel)
     return rgi((line))
 
+  # scipy linear interpolation to find value along data line 
   def linearInterpolation(self,z,data,line):
     f = interpolate.interp1d(z, data)
     return f((line))
@@ -102,7 +144,7 @@ class Plots:
 
   # lineplots
   def plotFigure(self,x,y,title,xtitle,ytitle,xlim,ylim,filename):
-    utils = Utils(); settings = Settings('namelist.json')
+    settings = Settings('namelist.json')
 
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"g-",label="GIN3D",linewidth=2)
@@ -113,11 +155,12 @@ class Plots:
 
   # HT line
   def plotHT(self,x,y,title,xtitle,ytitle,filename):
-    utils = Utils(); settings = Settings('namelist.json')
+    settings = Settings('namelist.json')
 
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    ax.legend(loc="upper right")
     plt.xlim(0.0,1.6); plt.ylim(0,100)
     plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
 
@@ -130,12 +173,29 @@ class Plots:
     yloglaw = np.linspace(0,1000,1000)
     roughloglaw = 0.654/0.41 * np.log(yloglaw/0.03)
 
+    field = utils.readField()
+    kite = field["RSKite"]; cup = field["RSCup"]; gill = field["RSGill"]
+
     fig = plt.figure(); ax = plt.gca()
     ax.semilogy(roughloglaw, yloglaw,"k-", label="LogLaw",linewidth=2)
+    ax.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
+    ax.semilogy(cup[:,1],cup[:,0],'.',color='b',label="Cup",markersize=12)
+    ax.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
     ax.semilogy(x,y,"r-",label="GIN3D",linewidth=2)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     ax.legend(loc="upper left")
-    plt.xlim(0.0,20.0); plt.ylim(10e0,10e2)
+    plt.xlim(0.0,20.0); plt.ylim(1e0,1e3)
     plt.xticks(np.arange(0,20+5,5))
+
+    # inset plot
+    ax2 = plt.axes([0,0,1,1])
+    ip = InsetPosition(ax,[0.6,0.075,0.35,0.35])
+    ax2.set_axes_locator(ip)
+    ax2.semilogy(roughloglaw, yloglaw,"k-", label="LogLaw",linewidth=2)
+    ax2.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
+    ax2.semilogy(cup[:,1],cup[:,0],'.',color='b',label="Cup",markersize=12)
+    ax2.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
+    ax2.semilogy(x,y,"r-",label="GIN3D",linewidth=2)
+    ax2.set_xlim(7.0,12.0); ax2.set_ylim(3*1e0,5*1e1)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)

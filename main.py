@@ -3,10 +3,11 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from ASKfunction import Settings, Utils, Plots
+from ASKfunction import Settings, Utils, Interp, Plots
 
 ####################### Enviorment Setup #######################
 utils = Utils()
+interp = Interp()
 plots = Plots()
 settings = Settings('namelist.json')
 
@@ -47,12 +48,12 @@ u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
 mag = utils.calcMag(u,v,w,nx,ny,nz)
 
 # Interpolation of non-coinciding points
-AAinterp  = utils.trilinearInterpolation(mag,X,Y,Z,AALine)
-Ainterp   = utils.trilinearInterpolation(mag,X,Y,Z,ALine)
-Binterp   = utils.trilinearInterpolation(mag,X,Y,Z,BLine)
-RS_z      = utils.trilinearInterpolation(mag,X,Y,Z,RSLine)
-HT_z      = utils.trilinearInterpolation(mag,X,Y,Z,HTLine)
-RS10m     = utils.trilinearInterpolation(mag,X,Y,Z,RS)
+AAinterp  = interp.trilinearInterpolation(mag,X,Y,Z,AALine)
+Ainterp   = interp.trilinearInterpolation(mag,X,Y,Z,ALine)
+Binterp   = interp.trilinearInterpolation(mag,X,Y,Z,BLine)
+RS_z      = interp.trilinearInterpolation(mag,X,Y,Z,RSLine)
+HT_z      = interp.trilinearInterpolation(mag,X,Y,Z,HTLine)
+RS10m     = interp.trilinearInterpolation(mag,X,Y,Z,RS)
 
 # Finding absolute distance from CP to HT for AA, A, and B (Note: dir = 0 for x and 1 for y)
 abs_AAdist = utils.findAbsDist(AALine,CP,0)
@@ -64,7 +65,7 @@ RS_agl, RSLine_adjusted = utils.removeLastElement(RS_z,RSLine,RS[2]-10.0)
 HT_agl, HTLine_adjusted = utils.removeLastElement(HT_z,HTLine,HT[2]-10.0)
 
 # Linear interpolation of U_RS(Z') using Z_HT, for normalization of HT profile vs agl
-HT_normalize = utils.linearInterpolation(RSLine_adjusted[:,2],RS_agl,HTLine_adjusted[:,2])
+HT_normalize = interp.linearInterpolation(RSLine_adjusted[:,2],RS_agl,HTLine_adjusted[:,2])
 
 ####################### Plotting #######################
 # Contour

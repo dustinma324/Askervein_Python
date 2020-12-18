@@ -8,20 +8,43 @@
       "ny"     : 385,
       "nz"     : 193
     },
+
     "Mesh3"  : {
       "nx"     : 641,
       "ny"     : 513,
       "nz"     : 257
     },
 
+    "FigurePath" : "/home/dustin/Desktop/Askervein/askervein_Python/figures/",
+
+    "FieldData"  : {
+      "Path"     : "/home/dustin/Desktop/Askervein/askervein_Python/FieldData/",
+
+      "AAResults": "MF03D_Results_AALine.csv",
+      "AAError"  : "MF03D_Results_AALine_errupper.csv",
+
+      "AResults" : "Field_Speed_Up.csv",
+      "AError"   : "TU03D_Results_ALine_errupper.csv",
+
+      "BResults" : "MF03D_Results_BLine.csv",
+      "BError"   : "MF03D_Results_BLine_errupper.csv",
+
+      "RSKite"   : "TK03_RS_Kite.csv",
+      "RSCup"    : "TK03_RS_Cup.csv",
+      "RSGill"   : "TU03B_RS_Gill.csv"
+    },
+
     "Streamwise"  : {
-      "FigurePath" : "/home/dustin/Desktop/Askervein/askervein_Python/figures/",
-      "UPath"      : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_U_mean_0030000.dat",
-      "VPath"      : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_V_mean_0030000.dat",
-      "WPath"      : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/Askervein_Stream_W_mean_0030000.dat",
+      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_U16.35/Askervein_Stream/",
+
+      "MeanU"      : "Askervein_Stream_U_mean_0030000.dat",
+      "MeanV"      : "Askervein_Stream_V_mean_0030000.dat",
+      "MeanW"      : "Askervein_Stream_W_mean_0030000.dat",
+
       "AALine"     : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/AALineProfileAdjust_stream.csv",
       "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/ALineProfileAdjust_stream.csv",
       "BLine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/BLineProfileAdjust_stream.csv",
+
       "RS"         : [2625.8, 2900, 24.7],
       "HT"         : [4708.7, 3156.8, 146.54],
       "CP"         : [4620.2, 2765.6, 139.19]
