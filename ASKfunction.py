@@ -8,24 +8,29 @@ class Settings:
   def __init__(self,namelist):
     with open(namelist) as json_file:
       data = json.load(json_file)
-    self.nxMesh2  = data["Mesh2"]["nx"]
-    self.nyMesh2  = data["Mesh2"]["ny"]
-    self.nzMesh2  = data["Mesh2"]["nz"]
-    self.nxMesh3  = data["Mesh3"]["nx"]
-    self.nyMesh3  = data["Mesh3"]["ny"]
-    self.nzMesh3  = data["Mesh3"]["nz"]
     self.lx  = data["lx"]
     self.ly  = data["ly"]
     self.lz  = data["lz"]
-    self.U   = data["UPath"]
-    self.V   = data["VPath"]
-    self.W   = data["WPath"]
-    self.AA  = data["AALine"]
-    self.A   = data["ALine"]
-    self.B   = data["BLine"]
-    self.RS  = data["RS"]
-    self.HT  = data["HT"]
-    self.CP  = data["CP"]
+
+    self.nxMesh2  = data["Mesh2"]["nx"]
+    self.nyMesh2  = data["Mesh2"]["ny"]
+    self.nzMesh2  = data["Mesh2"]["nz"]
+
+    self.nxMesh3  = data["Mesh3"]["nx"]
+    self.nyMesh3  = data["Mesh3"]["ny"]
+    self.nzMesh3  = data["Mesh3"]["nz"]
+
+    self.streamU   = data["Streamwise"]["UPath"]
+    self.streamV   = data["Streamwise"]["VPath"]
+    self.streamW   = data["Streamwise"]["WPath"]
+    self.streamAA  = data["Streamwise"]["AALine"]
+    self.streamA   = data["Streamwise"]["ALine"]
+    self.streamB   = data["Streamwise"]["BLine"]
+    self.streamRS  = data["Streamwise"]["RS"]
+    self.streamHT  = data["Streamwise"]["HT"]
+    self.streamCP  = data["Streamwise"]["CP"]
+
+    self.figurePath = data["Streamwise"]["FigurePath"]
 
 class Utils:
 
@@ -53,6 +58,15 @@ class Utils:
           mag[i,j,k] = np.sqrt(u[i,j,k]**2 + v[i,j,k]**2 + w[i,j,k]**2)
     return mag
 
+  # finding the absolute distance to HT and CP
+  def findAbsDist(self,line,ref,dir):
+    line[:][0] = line[:][0]-ref[0] #x-axis
+    line[:][1] = line[:][1]-ref[1] #y-axis
+    neg_idx = np.where(line[:][dir]<0)[0].max() #find last index that is a negative element
+    tmpline = np.sqrt(line[:][0]**2+line[:][1]**2)
+    tmpline[0:neg_idx] = tmpline[0:neg_idx] * -1
+    return tmpline
+
   # create vertical line given a specific X and Y location
   def createVerticalLine(self,x_val,y_val,lz,resolution,z0):
     array = np.ones((resolution,2))
@@ -61,8 +75,9 @@ class Utils:
     array = np.concatenate((array,tmp),1)
     return array
 
+  # removing the last two elemtns of the passed in array and normalizing z by z0
   def removeLastElement(self,profile,line,z0):
-    profile = profile[0:-2]
+    profile = profile[0:-2] 
     line[:,2] = line[:,2]-z0
     line = line[0:-2,:]
     return profile, line
@@ -78,12 +93,6 @@ class Utils:
 
 class Plots:
 
-  # lineplots
-  def plotFigure(self,x,y,title,xtitle,ytitle):
-    fig = plt.figure(); ax = plt.gca()
-    ax.plot(x,y,"g-",label="GIN3D",linewidth=2)
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
-
   # contours
   def plotContourf(self,x,y,data,title,xtitle,ytitle):
     fig = plt.figure(); ax = plt.gca()
@@ -91,7 +100,14 @@ class Plots:
     fig.colorbar(t)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
 
-  # HT Line
+  # lineplots
+  def plotFigure(self,x,y,title,xtitle,ytitle,xlim,ylim):
+    fig = plt.figure(); ax = plt.gca()
+    ax.plot(x,y,"g-",label="GIN3D",linewidth=2)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
+
+  # HT line
   def plotHT(self,x,y,title,xtitle,ytitle):
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
@@ -109,5 +125,5 @@ class Plots:
     ax.semilogy(x,y,"r-",label="GIN3D",linewidth=2)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     ax.legend(loc="upper left")
-    plt.xlim(0.0,20); plt.ylim(10e0,10e2)
+    plt.xlim(0.0,20.0); plt.ylim(10e0,10e2)
     plt.xticks(np.arange(0,20+5,5))
