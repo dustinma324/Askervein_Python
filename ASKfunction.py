@@ -73,6 +73,13 @@ class Utils:
     }
     return results
 
+  # performing necessary calculation used for error bars
+  def creatingErrorBarData(self,dataField,errUp):
+    dataX = dataField[:,0]*1000
+    dataU = dataField[:,1]
+    err = errUp[:,1] - dataField[:,1]
+    return dataX, dataU, err
+
   # reading the dot data file to put into 3d matrix
   def readMesh(self,Udata,Vdata,Wdata,nx,ny,nz):
     u = np.zeros((nx,ny,nz))
@@ -143,26 +150,18 @@ class Plots:
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
 
   # lineplots
-  def plotFigure(self,x,y,title,xtitle,ytitle,xlim,ylim,filename):
-    settings = Settings('namelist.json')
+  def plotFigure(self,x,y,title,xtitle,ytitle,xlim,ylim,fdataname,edataname,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
+    field = utils.readField()
+    dataField = field[fdataname]; errUp = field[edataname]
+    dataX, dataU, err = utils.creatingErrorBarData(dataField,errUp)
 
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"g-",label="GIN3D",linewidth=2)
+    plt.errorbar(dataX,dataU,yerr=err,fmt='o',label="Field")
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
-
-    fig.savefig(settings.figurePath+filename,dpi=1200)
-
-  # HT line
-  def plotHT(self,x,y,title,xtitle,ytitle,filename):
-    settings = Settings('namelist.json')
-
-    fig = plt.figure(); ax = plt.gca()
-    ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
-    ax.legend(loc="upper right")
-    plt.xlim(0.0,1.6); plt.ylim(0,100)
-    plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
 
@@ -197,5 +196,18 @@ class Plots:
     ax2.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
     ax2.semilogy(x,y,"r-",label="GIN3D",linewidth=2)
     ax2.set_xlim(7.0,12.0); ax2.set_ylim(3*1e0,5*1e1)
+
+    fig.savefig(settings.figurePath+filename,dpi=1200)
+
+  # HT line
+  def plotHT(self,x,y,title,xtitle,ytitle,filename):
+    settings = Settings('namelist.json')
+
+    fig = plt.figure(); ax = plt.gca()
+    ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    ax.legend(loc="upper right")
+    plt.xlim(0.0,1.6); plt.ylim(0,100)
+    plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
