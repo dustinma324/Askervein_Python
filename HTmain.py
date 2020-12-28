@@ -12,24 +12,24 @@ plots = Plots()
 settings = Settings('namelist.json')
 
 # Setting up simulation parameters
-lx = settings.streamlx; ly = settings.streamly; lz = settings.streamlz
+lx = settings.anglelx; ly = settings.anglely; lz = settings.anglelz
 nx = settings.nxMesh2; ny = settings.nyMesh2; nz = settings.nzMesh2
 X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 resolution = nz*2
 
 ####################### Loading Field data #######################
 # Important site locations
-RS = settings.streamRS; HT = settings.streamHT; CP = settings.streamCP
+RS = settings.angleRS; HT = settings.angleHT; CP = settings.angleCP
 
 # Reading speedup lines
-AALine = pd.read_csv(settings.streamAA, header=None)
-ALine  = pd.read_csv(settings.streamA,  header=None)
-BLine  = pd.read_csv(settings.streamB,  header=None)
+AALine = pd.read_csv(settings.angleAA, header=None)
+ALine  = pd.read_csv(settings.angleA,  header=None)
+BLine  = pd.read_csv(settings.angleB,  header=None)
 
 # Reading GIN3D simulation results
-Udata = np.loadtxt(settings.streamU)
-Vdata = np.loadtxt(settings.streamV)
-Wdata = np.loadtxt(settings.streamW)
+Udata = np.loadtxt(settings.angleU)
+Vdata = np.loadtxt(settings.angleV)
+Wdata = np.loadtxt(settings.angleW)
 
 ####################### Calculations #######################
 # Definind Mesh Grid

@@ -10,18 +10,17 @@ class Settings:
   def __init__(self,namelist):
     with open(namelist) as json_file:
       data = json.load(json_file)
-    self.lx  = data["lx"]
-    self.ly  = data["ly"]
-    self.lz  = data["lz"]
 
     self.nxMesh2  = data["Mesh2"]["nx"]
     self.nyMesh2  = data["Mesh2"]["ny"]
     self.nzMesh2  = data["Mesh2"]["nz"]
-
     self.nxMesh3  = data["Mesh3"]["nx"]
     self.nyMesh3  = data["Mesh3"]["ny"]
     self.nzMesh3  = data["Mesh3"]["nz"]
 
+    self.streamlx  = data["Streamwise"]["lx"]
+    self.streamly  = data["Streamwise"]["ly"]
+    self.streamlz  = data["Streamwise"]["lz"]
     self.streamU   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanU"]
     self.streamV   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanV"]
     self.streamW   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanW"]
@@ -32,6 +31,19 @@ class Settings:
     self.streamHT  = data["Streamwise"]["HT"]
     self.streamCP  = data["Streamwise"]["CP"]
 
+    self.anglelx  = data["Angled"]["lx"]
+    self.anglely  = data["Angled"]["ly"]
+    self.anglelz  = data["Angled"]["lz"]
+    self.angleU   = data["Angled"]["GIN3DPath"]+data["Angled"]["MeanU"]
+    self.angleV   = data["Angled"]["GIN3DPath"]+data["Angled"]["MeanV"]
+    self.angleW   = data["Angled"]["GIN3DPath"]+data["Angled"]["MeanW"]
+    self.angleAA  = data["Angled"]["AALine"]
+    self.angleA   = data["Angled"]["ALine"]
+    self.angleB   = data["Angled"]["BLine"]
+    self.angleRS  = data["Angled"]["RS"]
+    self.angleHT  = data["Angled"]["HT"]
+    self.angleCP  = data["Angled"]["CP"]
+
     self.FD_AAR    = data["FieldData"]["Path"]+data["FieldData"]["AAResults"]
     self.FD_AR     = data["FieldData"]["Path"]+data["FieldData"]["AResults"]
     self.FD_BR     = data["FieldData"]["Path"]+data["FieldData"]["BResults"]
@@ -41,6 +53,8 @@ class Settings:
     self.FD_RSKite = data["FieldData"]["Path"]+data["FieldData"]["RSKite"]
     self.FD_RSCup  = data["FieldData"]["Path"]+data["FieldData"]["RSCup"]
     self.FD_RSGill = data["FieldData"]["Path"]+data["FieldData"]["RSGill"]
+    self.FD_HTR    = data["FieldData"]["Path"]+data["FieldData"]["HTField"]
+    self.FD_HTErr  = data["FieldData"]["Path"]+data["FieldData"]["HTError"]
 
     self.figurePath = data["FigurePath"]
 
@@ -58,6 +72,8 @@ class Utils:
     rsKite = np.array(pd.read_csv(settings.FD_RSKite))
     rsCup = np.array(pd.read_csv(settings.FD_RSCup))
     rsGill = np.array(pd.read_csv(settings.FD_RSGill))
+    htResults = np.array(pd.read_csv(settings.FD_HTR))
+    htErr = np.array(pd.read_csv(settings.FD_HTErr))
 
     # Store these arrays
     results = {
@@ -69,16 +85,25 @@ class Utils:
       "BError"    : bErr,
       "RSKite"    : rsKite,
       "RSCup"     : rsCup,
-      "RSGill"    : rsGill
+      "RSGill"    : rsGill,
+      "HTResults" : htResults,
+      "HTError"   : htErr
     }
     return results
 
-  # performing necessary calculation used for error bars
+  # performing necessary calculation used for error bars for AA, A, and B line
   def creatingErrorBarData(self,dataField,errUp):
     dataX = dataField[:,0]*1000
     dataU = dataField[:,1]
     err = errUp[:,1] - dataField[:,1]
     return dataX, dataU, err
+
+  # error propagation calculation for SpeedUp error (0 = RS, 1 = HT, 2 = Z)
+  def errorPropagationCalc(self,data,Err):
+    z  = data[:,2]
+    Ds = (data[:,1] - data[:,0])/data[:,0]
+    err = np.sqrt( (Err[:,1]/data[:,0])**2 + ((data[:,1]/(data[:,0]**2))*Err[:,0])**2 )
+    return Ds, z, err 
 
   # reading the dot data file to put into 3d matrix
   def readMesh(self,Udata,Vdata,Wdata,nx,ny,nz):
@@ -159,7 +184,7 @@ class Plots:
 
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"g-",label="GIN3D",linewidth=2)
-    plt.errorbar(dataX,dataU,yerr=err,fmt='o',label="Field")
+    plt.errorbar(dataX,(dataU*8.9-8.9)/8.9,yerr=err,fmt='o',label="Field")
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
 
@@ -170,7 +195,7 @@ class Plots:
     utils = Utils(); settings = Settings('namelist.json')
 
     yloglaw = np.linspace(0,1000,1000)
-    roughloglaw = 0.654/0.41 * np.log(yloglaw/0.03)
+    roughloglaw = 0.654/0.41 * np.log(yloglaw/0.03) # Log Law used in Figure 7 (DeLeon 2018)
 
     field = utils.readField()
     kite = field["RSKite"]; cup = field["RSCup"]; gill = field["RSGill"]
@@ -201,10 +226,15 @@ class Plots:
 
   # HT line
   def plotHT(self,x,y,title,xtitle,ytitle,filename):
-    settings = Settings('namelist.json')
+    utils = Utils(); settings = Settings('namelist.json')
+
+    field = utils.readField()
+    dataField = field["HTResults"]; dataErr = field["HTError"]
+    Ds, z, err = utils.errorPropagationCalc(dataField,dataErr) 
 
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
+    plt.errorbar(Ds,z,xerr=err,fmt='o',label="Field")
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     ax.legend(loc="upper right")
     plt.xlim(0.0,1.6); plt.ylim(0,100)
