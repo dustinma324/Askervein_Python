@@ -13,9 +13,13 @@ settings = Settings('namelist.json')
 
 # Setting up simulation parameters
 lx = settings.anglelx; ly = settings.anglely; lz = settings.anglelz
-nx = settings.nxMesh2; ny = settings.nyMesh2; nz = settings.nzMesh2
+nx = settings.nxMesh; ny = settings.nyMesh; nz = settings.nzMesh
 X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 resolution = nz*2
+
+# Accounting for staggered grid configuration
+#dx = lx/(nx-2); dy = ly/(ny-2); dz = lz/(nz-2)
+#X = X+dx/2; Y = Y+dy/2; Z = Z+dz/2
 
 ####################### Loading Field data #######################
 # Important site locations
@@ -67,8 +71,9 @@ HT_normalize = interp.linearInterpolation(RSLine_adjusted[:,2],RS_agl,HTLine_adj
 
 ####################### Plotting #######################
 # Contour
-plots.plotContourf(xyx,xyy,mag[:,:,20].T,"XY Plane","X","Y")
-plots.plotContourf(xzx,xzz,mag[:,192,:].T,"XZ Plane","X","Z")
+plots.plotContourf(xyx,xyy,mag[:,:,int(np.floor(0.15*nz))].T,"XY Plane","X","Y")
+plots.plotContourf(xzx,xzz,mag[:,int(np.floor(ny/2)),:].T,"XZ Plane","X","Z")
+plots.plotContourf(yzy,yzz,mag[int(np.floor(nx/2)),:,:].T,"YZ Plane","Y","Z")
 
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 plots.plotFigure(abs_AAdist,(AAinterp-RS10m)/RS10m,"AA Line","Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.png")

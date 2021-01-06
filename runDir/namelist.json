@@ -1,16 +1,4 @@
 {
-    "Mesh2"  : {
-      "nx"     : 513,
-      "ny"     : 385,
-      "nz"     : 193
-    },
-
-    "Mesh3"  : {
-      "nx"     : 641,
-      "ny"     : 513,
-      "nz"     : 257
-    },
-
     "FigurePath" : "/home/dustin/Desktop/Askervein/askervein_Python/figures/",
 
     "FieldData"  : {
@@ -40,7 +28,19 @@
       "ly"     : 5800.0,
       "lz"     : 1000.0,
 
-      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_U16.35_mesh2/Askervein_Stream/",
+      "Mesh2"  : {
+        "nx"     : 513,
+        "ny"     : 385,
+        "nz"     : 193
+      },
+
+      "Mesh3"  : {
+        "nx"     : 641,
+        "ny"     : 513,
+        "nz"     : 257
+      },
+
+      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_S_mesh2/Askervein_Stream/",
 
       "MeanU"      : "Askervein_Stream_U_mean_0030000.dat",
       "MeanV"      : "Askervein_Stream_V_mean_0030000.dat",
@@ -50,9 +50,9 @@
       "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/ALineProfileAdjust_stream.csv",
       "BLine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/BLineProfileAdjust_stream.csv",
 
-      "RS"         : [2625.8, 2900, 24.7],
-      "HT"         : [4708.7, 3156.8, 146.54],
-      "CP"         : [4620.2, 2765.6, 139.19]
+      "RS"         : [2625.8,    2900,   24.7],
+      "HT"         : [4707.98, 3156.8, 144.54],
+      "CP"         : [4620.2,  2765.6, 137.19]
     },
 
     "Angled" : {
@@ -61,18 +61,24 @@
       "ly"     : 8000.0,
       "lz"     : 1000.0,
 
-      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_U16.35/Askervein_Stream/",
+      "Mesh"  : {
+        "nx"     : 513,
+        "ny"     : 513,
+        "nz"     : 129
+      },
 
-      "MeanU"      : "Askervein_Stream_U_mean_0030000.dat",
-      "MeanV"      : "Askervein_Stream_V_mean_0030000.dat",
-      "MeanW"      : "Askervein_Stream_W_mean_0030000.dat",
+      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_A/Askervein_Angled/",
 
-      "AALine"     : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/AALineProfileAdjust_stream.csv",
-      "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/ALineProfileAdjust_stream.csv",
-      "BLine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/BLineProfileAdjust_stream.csv",
+      "MeanU"      : "Askervein_Angled_U_mean_0040000.dat",
+      "MeanV"      : "Askervein_Angled_V_mean_0040000.dat",
+      "MeanW"      : "Askervein_Angled_W_mean_0040000.dat",
 
-      "RS"         : [3188.526, 2766.025, 24.7],
-      "HT"         : [4820.121, 6105.63, 144.54],
+      "AALine"     : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/AALineProfileAdjust_angled.csv",
+      "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/ALineProfileAdjust_angled.csv",
+      "BLine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/BLineProfileAdjust_angled.csv",
+
+      "RS"         : [3188.526, 2766.025,   24.7],
+      "HT"         : [4007.197, 4697.604, 144.54],
       "CP"         : [4302.120, 4426.026, 137.19]
     }
 }

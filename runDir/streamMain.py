@@ -68,7 +68,8 @@ HT_normalize = interp.linearInterpolation(RSLine_adjusted[:,2],RS_agl,HTLine_adj
 ####################### Plotting #######################
 # Contour
 plots.plotContourf(xyx,xyy,mag[:,:,20].T,"XY Plane","X","Y")
-plots.plotContourf(xzx,xzz,mag[:,192,:].T,"XZ Plane","X","Z")
+plots.plotContourf(xzx,xzz,mag[:,int(np.floor(ny/2)),:].T,"XZ Plane","X","Z")
+plots.plotContourf(yzy,yzz,mag[int(np.floor(nx/2)),:,:].T,"YZ Plane","Y","Z")
 
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 plots.plotFigure(abs_AAdist,(AAinterp-RS10m)/RS10m,"AA Line","Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.png")

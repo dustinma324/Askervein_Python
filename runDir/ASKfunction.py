@@ -11,12 +11,13 @@ class Settings:
     with open(namelist) as json_file:
       data = json.load(json_file)
 
-    self.nxMesh2  = data["Mesh2"]["nx"]
-    self.nyMesh2  = data["Mesh2"]["ny"]
-    self.nzMesh2  = data["Mesh2"]["nz"]
-    self.nxMesh3  = data["Mesh3"]["nx"]
-    self.nyMesh3  = data["Mesh3"]["ny"]
-    self.nzMesh3  = data["Mesh3"]["nz"]
+    # Streamwise data
+    self.nxMesh2  = data["Streamwise"]["Mesh2"]["nx"]
+    self.nyMesh2  = data["Streamwise"]["Mesh2"]["ny"]
+    self.nzMesh2  = data["Streamwise"]["Mesh2"]["nz"]
+    self.nxMesh3  = data["Streamwise"]["Mesh3"]["nx"]
+    self.nyMesh3  = data["Streamwise"]["Mesh3"]["ny"]
+    self.nzMesh3  = data["Streamwise"]["Mesh3"]["nz"]
 
     self.streamlx  = data["Streamwise"]["lx"]
     self.streamly  = data["Streamwise"]["ly"]
@@ -31,6 +32,11 @@ class Settings:
     self.streamHT  = data["Streamwise"]["HT"]
     self.streamCP  = data["Streamwise"]["CP"]
 
+    # Angled data
+    self.nxMesh  = data["Angled"]["Mesh"]["nx"]
+    self.nyMesh  = data["Angled"]["Mesh"]["ny"]
+    self.nzMesh  = data["Angled"]["Mesh"]["nz"]
+
     self.anglelx  = data["Angled"]["lx"]
     self.anglely  = data["Angled"]["ly"]
     self.anglelz  = data["Angled"]["lz"]
@@ -44,6 +50,7 @@ class Settings:
     self.angleHT  = data["Angled"]["HT"]
     self.angleCP  = data["Angled"]["CP"]
 
+    # ASK83 field data
     self.FD_AAR    = data["FieldData"]["Path"]+data["FieldData"]["AAResults"]
     self.FD_AR     = data["FieldData"]["Path"]+data["FieldData"]["AResults"]
     self.FD_BR     = data["FieldData"]["Path"]+data["FieldData"]["BResults"]
