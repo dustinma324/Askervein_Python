@@ -18,8 +18,8 @@ X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 resolution = nz*2
 
 # Accounting for staggered grid configuration
-#dx = lx/(nx-2); dy = ly/(ny-2); dz = lz/(nz-2)
-#X = X+dx/2; Y = Y+dy/2; Z = Z+dz/2
+dx = lx/(nx-2); dy = ly/(ny-2); dz = lz/(nz-2)
+X = X+dx/2; Y = Y+dy/2; Z = Z+dz/2
 
 ####################### Loading Field data #######################
 # Important site locations

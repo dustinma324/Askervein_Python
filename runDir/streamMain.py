@@ -17,6 +17,9 @@ nx = settings.nxMesh2; ny = settings.nyMesh2; nz = settings.nzMesh2
 X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 resolution = nz*2
 
+dx = lx/(nx-1); dy = ly/(ny-1); dz = lz/(nz-1)
+X = X+dx/2; Y = Y+dy/2; Z = Z+dz/2
+
 ####################### Loading Field data #######################
 # Important site locations
 RS = settings.streamRS; HT = settings.streamHT; CP = settings.streamCP
@@ -67,14 +70,14 @@ HT_normalize = interp.linearInterpolation(RSLine_adjusted[:,2],RS_agl,HTLine_adj
 
 ####################### Plotting #######################
 # Contour
-plots.plotContourf(xyx,xyy,mag[:,:,20].T,"XY Plane","X","Y")
-plots.plotContourf(xzx,xzz,mag[:,int(np.floor(ny/2)),:].T,"XZ Plane","X","Z")
-plots.plotContourf(yzy,yzz,mag[int(np.floor(nx/2)),:,:].T,"YZ Plane","Y","Z")
+#plots.plotContourf(xyx,xyy,mag[:,:,20].T,"XY Plane","X","Y")
+#plots.plotContourf(xzx,xzz,mag[:,int(np.floor(ny/2)),:].T,"XZ Plane","X","Z")
+#plots.plotContourf(yzy,yzz,mag[int(np.floor(nx/2)),:,:].T,"YZ Plane","Y","Z")
 
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 plots.plotFigure(abs_AAdist,(AAinterp-RS10m)/RS10m,"AA Line","Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.png")
 plots.plotFigure(abs_Adist, ( Ainterp-RS10m)/RS10m, "A Line","Distance from HT (m)","$\Delta$ S",[-1000,1000],[-1,1],"AResults","AError","ALine.png")
-#plots.plotFigure(abs_Bdist, ( Binterp-RS10m)/RS10m, "B Line","Distance from HT (m)","$\Delta$ S",[-500,1800],[-1,1],"BResults,"BError","BLine.png")
+#plots.plotFigure(abs_Bdist, ( Binterp-RS10m)/RS10m, "B Line","Distance from HT (m)","$\Delta$ S",[-500,1800],[-1,1],"BResults","BError","BLine.png")
 
 # RS and HT vs Z
 plots.plotRS(RS_agl,RSLine_adjusted[:,2],"RS","Mean Velocity ($ms^{-1}$)","$h_{agl}$ (m)","RSloglaw.png")

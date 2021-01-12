@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from scipy import interpolate
+from uncertainties import unumpy as unp
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 class Settings:
@@ -61,7 +62,6 @@ class Settings:
     self.FD_RSCup  = data["FieldData"]["Path"]+data["FieldData"]["RSCup"]
     self.FD_RSGill = data["FieldData"]["Path"]+data["FieldData"]["RSGill"]
     self.FD_HTR    = data["FieldData"]["Path"]+data["FieldData"]["HTField"]
-    self.FD_HTErr  = data["FieldData"]["Path"]+data["FieldData"]["HTError"]
 
     self.figurePath = data["FigurePath"]
 
@@ -80,7 +80,6 @@ class Utils:
     rsCup = np.array(pd.read_csv(settings.FD_RSCup))
     rsGill = np.array(pd.read_csv(settings.FD_RSGill))
     htResults = np.array(pd.read_csv(settings.FD_HTR))
-    htErr = np.array(pd.read_csv(settings.FD_HTErr))
 
     # Store these arrays
     results = {
@@ -93,8 +92,7 @@ class Utils:
       "RSKite"    : rsKite,
       "RSCup"     : rsCup,
       "RSGill"    : rsGill,
-      "HTResults" : htResults,
-      "HTError"   : htErr
+      "HTResults" : htResults
     }
     return results
 
@@ -106,11 +104,11 @@ class Utils:
     return dataX, dataU, err
 
   # error propagation calculation for SpeedUp error (0 = RS, 1 = HT, 2 = Z)
-  def errorPropagationCalc(self,data,Err):
-    z  = data[:,2]
-    Ds = (data[:,1] - data[:,0])/data[:,0]
-    err = np.sqrt( (Err[:,1]/data[:,0])**2 + ((data[:,1]/(data[:,0]**2))*Err[:,0])**2 )
-    return Ds, z, err 
+  def errorPropagationCalc(self,data):
+    DS = data[:,0]
+    z  = data[:,1]
+    err = data[:,2]
+    return DS, z, err 
 
   # reading the dot data file to put into 3d matrix
   def readMesh(self,Udata,Vdata,Wdata,nx,ny,nz):
@@ -236,12 +234,12 @@ class Plots:
     utils = Utils(); settings = Settings('namelist.json')
 
     field = utils.readField()
-    dataField = field["HTResults"]; dataErr = field["HTError"]
-    Ds, z, err = utils.errorPropagationCalc(dataField,dataErr) 
+    dataField = field["HTResults"]
+    DS, z, err = utils.errorPropagationCalc(dataField) 
 
     fig = plt.figure(); ax = plt.gca()
     ax.plot(x,y,"r-",label="GIN3D",linewidth=2)
-    plt.errorbar(Ds,z,xerr=err,fmt='o',label="Field")
+    plt.errorbar(DS,z,xerr=err,fmt='o',label="Field")
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     ax.legend(loc="upper right")
     plt.xlim(0.0,1.6); plt.ylim(0,100)

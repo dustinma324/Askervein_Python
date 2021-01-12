@@ -18,8 +18,7 @@
       "RSCup"    : "TK03_RS_Cup.csv",
       "RSGill"   : "TU03B_RS_Gill.csv",
 
-      "HTField"  : "TU03B_HTField.csv",
-      "HTError"  : "TU03B_HTerr.csv"
+      "HTField"  : "HT_errbar.csv"
     },
 
     "Streamwise"  : {
@@ -40,11 +39,11 @@
         "nz"     : 257
       },
 
-      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_S_mesh2/Askervein_Stream/",
+      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_S/Askervein_Stream/",
 
-      "MeanU"      : "Askervein_Stream_U_mean_0030000.dat",
-      "MeanV"      : "Askervein_Stream_V_mean_0030000.dat",
-      "MeanW"      : "Askervein_Stream_W_mean_0030000.dat",
+      "MeanU"      : "Askervein_Stream_U_mean_0591313.dat",
+      "MeanV"      : "Askervein_Stream_V_mean_0591313.dat",
+      "MeanW"      : "Askervein_Stream_W_mean_0591313.dat",
 
       "AALine"     : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/AALineProfileAdjust_stream.csv",
       "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/ALineProfileAdjust_stream.csv",
@@ -64,14 +63,14 @@
       "Mesh"  : {
         "nx"     : 513,
         "ny"     : 513,
-        "nz"     : 129
+        "nz"     : 257
       },
 
-      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_A/Askervein_Angled/",
+      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/runDir/ASK_A/Askervein_Angled/",
 
-      "MeanU"      : "Askervein_Angled_U_mean_0040000.dat",
-      "MeanV"      : "Askervein_Angled_V_mean_0040000.dat",
-      "MeanW"      : "Askervein_Angled_W_mean_0040000.dat",
+      "MeanU"      : "Askervein_Angled_U_mean_0030000.dat",
+      "MeanV"      : "Askervein_Angled_V_mean_0030000.dat",
+      "MeanW"      : "Askervein_Angled_W_mean_0030000.dat",
 
       "AALine"     : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/AALineProfileAdjust_angled.csv",
       "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/ALineProfileAdjust_angled.csv",
