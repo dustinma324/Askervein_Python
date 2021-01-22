@@ -4,7 +4,6 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from scipy import interpolate
-from uncertainties import unumpy as unp
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
 
 class Settings:
@@ -169,6 +168,34 @@ class Interp:
   def linearInterpolation(self,z,data,line):
     f = interpolate.interp1d(z, data)
     return f((line))
+
+  # 
+  def bilinearInterpolationProfile(self,U,V,W,dx,dy,dz,line):
+    line = np.array(line)
+    store = np.zeros((line.shape[0],9))
+    for i in range(line.shape[0]-1):
+      tmp = line[i,:]
+      x1 = int(np.floor(tmp[0]/dx))
+      x2 = int(x1+1)
+      ax = tmp[0]/dx - x1
+      y1 = int(np.floor(tmp[1]/dy))
+      y2 = int(y1+1)
+      ay = tmp[1]/dy - y1
+      z1 = int(np.floor(tmp[2]/dz))
+      z2 = int(z1+1)
+      az = tmp[2]/dz - z1
+      store[i,:] = [x1,x2,y1,y2,z1,z2,ax,ay,az]
+      print(x1,x2,y1,y2,z1,z2,ax,ay,az)
+      # bilinear interpolation
+#      ylo_u = (1.0-ax)*U[x1,y1,:] + ax*U[x2,y1,:]
+#      yhi_u = (1.0-ax)*U[x1,y2,:] + ax*U[x2,y2,:]
+#      P_u = (1.0-ay)*ylo_u + ay*yhi_u
+#      ylo_v = (1.0-ax)*V[x1,y1,:] + ax*V[x2,y1,:]
+#      yhi_v = (1.0-ax)*V[x1,y2,:] + ax*V[x2,y2,:]
+#      P_v = (1.0-ay)*ylo_v + ay*yhi_v
+#      P_w = 0.5*(W[x1,y1,1:]+W[x1,y1,:-1])
+#    return np.sqrt(P_u**2+P_v**2+P_w**2)
+    return store
 
 class Plots:
 

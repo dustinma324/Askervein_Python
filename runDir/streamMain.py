@@ -14,15 +14,18 @@ settings = Settings('namelist.json')
 # Setting up simulation parameters
 lx = settings.streamlx; ly = settings.streamly; lz = settings.streamlz
 nx = settings.nxMesh2; ny = settings.nyMesh2; nz = settings.nzMesh2
+dx = lx/(nx-2); dy = ly/(ny-2); dz = lz/(nz-2)
 X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 resolution = nz*2
 
-dx = lx/(nx-1); dy = ly/(ny-1); dz = lz/(nz-1)
-X = X+dx/2; Y = Y+dy/2; Z = Z+dz/2
+#xyz_grid = np.meshgrid(X,Y,Z,indexing='ij')
+#xyz_list = np.reshape(xyz_grid, (3,-1), order='C').T
 
 ####################### Loading Field data #######################
 # Important site locations
-RS = settings.streamRS; HT = settings.streamHT; CP = settings.streamCP
+RS = settings.streamRS
+HT = settings.streamHT
+CP = settings.streamCP
 
 # Reading speedup lines
 AALine = pd.read_csv(settings.streamAA, header=None)
@@ -35,20 +38,23 @@ Vdata = np.loadtxt(settings.streamV)
 Wdata = np.loadtxt(settings.streamW)
 
 ####################### Calculations #######################
-# Definind Mesh Grid
-xzx, xzz = np.meshgrid(X,Z,indexing='xy')
-xyx, xyy = np.meshgrid(X,Y,indexing='xy')
-yzy, yzz = np.meshgrid(Y,Z,indexing='xy')
-
 # Creating RS and HT vertical lines
 RSLine = utils.createVerticalLine(RS[0],RS[1],lz,resolution,RS[2]-10)
 HTLine = utils.createVerticalLine(HT[0],HT[1],lz,resolution,HT[2]-10)
 
 # Calculate mean velocity magnitude 
 u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
+
 mag = utils.calcMag(u,v,w,nx,ny,nz)
 
 # Interpolation of non-coinciding points
+AAinfo     = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,AALine)
+Ainfo      = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,ALine)
+Binfo      = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,BLine)
+RS_info    = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,RSLine)
+HT_info    = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,HTLine)
+RS10m_info = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,RS)
+
 AAinterp  = interp.trilinearInterpolation(mag,X,Y,Z,AALine)
 Ainterp   = interp.trilinearInterpolation(mag,X,Y,Z,ALine)
 Binterp   = interp.trilinearInterpolation(mag,X,Y,Z,BLine)
@@ -70,9 +76,13 @@ HT_normalize = interp.linearInterpolation(RSLine_adjusted[:,2],RS_agl,HTLine_adj
 
 ####################### Plotting #######################
 # Contour
-#plots.plotContourf(xyx,xyy,mag[:,:,20].T,"XY Plane","X","Y")
-#plots.plotContourf(xzx,xzz,mag[:,int(np.floor(ny/2)),:].T,"XZ Plane","X","Z")
-#plots.plotContourf(yzy,yzz,mag[int(np.floor(nx/2)),:,:].T,"YZ Plane","Y","Z")
+if 0:
+  xzx, xzz = np.meshgrid(X,Z,indexing='ij')
+  xyx, xyy = np.meshgrid(X,Y,indexing='ij')
+  yzy, yzz = np.meshgrid(Y,Z,indexing='ij')
+  plots.plotContourf(xyx,xyy,mag[:,:,20],"XY Plane","X","Y")
+  plots.plotContourf(xzx,xzz,mag[:,int(np.floor(ny/2)),:],"XZ Plane","X","Z")
+  plots.plotContourf(yzy,yzz,mag[int(np.floor(nx/2)),:,:],"YZ Plane","Y","Z")
 
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 plots.plotFigure(abs_AAdist,(AAinterp-RS10m)/RS10m,"AA Line","Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.png")
