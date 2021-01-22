@@ -161,7 +161,7 @@ class Interp:
 
   # scipy trilinear interpolation to find values along data lines
   def trilinearInterpolation(self,vel,x,y,z,line):
-    rgi = interpolate.RegularGridInterpolator((x,y,z),vel)
+    rgi = interpolate.RegularGridInterpolator((x,y,z),vel,method='linear')
     return rgi((line))
 
   # scipy linear interpolation to find value along data line 
@@ -169,33 +169,57 @@ class Interp:
     f = interpolate.interp1d(z, data)
     return f((line))
 
-  # 
-  def bilinearInterpolationProfile(self,U,V,W,dx,dy,dz,line):
+  # interpolation for a line
+  def InterpolationLine(self,U,V,W,dx,dy,dz,line,size):
     line = np.array(line)
-    store = np.zeros((line.shape[0],9))
-    for i in range(line.shape[0]-1):
+    storeVel = np.zeros((size,3))
+    for i in range(size-1):
       tmp = line[i,:]
       x1 = int(np.floor(tmp[0]/dx))
-      x2 = int(x1+1)
+      x2 = int(x1-1)
       ax = tmp[0]/dx - x1
+
       y1 = int(np.floor(tmp[1]/dy))
-      y2 = int(y1+1)
+      y2 = int(y1-1)
       ay = tmp[1]/dy - y1
+
       z1 = int(np.floor(tmp[2]/dz))
-      z2 = int(z1+1)
+      z2 = int(z1-1)
       az = tmp[2]/dz - z1
-      store[i,:] = [x1,x2,y1,y2,z1,z2,ax,ay,az]
-      print(x1,x2,y1,y2,z1,z2,ax,ay,az)
-      # bilinear interpolation
-#      ylo_u = (1.0-ax)*U[x1,y1,:] + ax*U[x2,y1,:]
-#      yhi_u = (1.0-ax)*U[x1,y2,:] + ax*U[x2,y2,:]
-#      P_u = (1.0-ay)*ylo_u + ay*yhi_u
-#      ylo_v = (1.0-ax)*V[x1,y1,:] + ax*V[x2,y1,:]
-#      yhi_v = (1.0-ax)*V[x1,y2,:] + ax*V[x2,y2,:]
-#      P_v = (1.0-ay)*ylo_v + ay*yhi_v
-#      P_w = 0.5*(W[x1,y1,1:]+W[x1,y1,:-1])
-#    return np.sqrt(P_u**2+P_v**2+P_w**2)
-    return store
+      print(x1,x2,y1,y2,z1,z2,ax,ay,az) # 9 elements in this
+
+      # linear interpolation of 3 components in 3 directions
+      storeVel[i,0] = (1.0-ax)*U[x2,y1,z1]+ax*U[x1,y1,z1]
+      storeVel[i,1] = (1.0-ay)*V[x1,y2,z1]+ay*V[x1,y1,z1]
+      storeVel[i,2] = (1.0-az)*W[x1,y1,z2]+az*W[x1,y1,z1]
+
+    mag = np.sqrt(storeVel[:,0]**2+storeVel[:,1]**2+storeVel[:,2]**2)
+    return mag
+
+  # interpolation for a single point
+  def InterpolationPoint(self,U,V,W,dx,dy,dz,line,size):
+    line = np.array(line)
+    storeVel = np.zeros(size)
+    x1 = int(np.floor(line[0]/dx))
+    x2 = int(x1-1)
+    ax = line[0]/dx - x1
+
+    y1 = int(np.floor(line[1]/dy))
+    y2 = int(y1-1)
+    ay = line[1]/dy - y1
+
+    z1 = int(np.floor(line[2]/dz))
+    z2 = int(z1-1)
+    az = line[2]/dz - z1
+    print(x1,x2,y1,y2,z1,z2,ax,ay,az) # 9 elements in this
+
+     # linear interpolation of 3 components in 3 directions
+    storeVel[0] = (1.0-ax)*U[x2,y1,z1]+ax*U[x1,y1,z1]
+    storeVel[1] = (1.0-ay)*V[x1,y2,z1]+ay*V[x1,y1,z1]
+    storeVel[2] = (1.0-az)*W[x1,y1,z2]+az*W[x1,y1,z1]
+
+    mag = np.sqrt(storeVel[0]**2+storeVel[1]**2+storeVel[2]**2)
+    return mag
 
 class Plots:
 

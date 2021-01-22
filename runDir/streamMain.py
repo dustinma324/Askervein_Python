@@ -23,9 +23,9 @@ resolution = nz*2
 
 ####################### Loading Field data #######################
 # Important site locations
-RS = settings.streamRS
-HT = settings.streamHT
-CP = settings.streamCP
+RS = np.array(settings.streamRS)
+HT = np.array(settings.streamHT)
+CP = np.array(settings.streamCP)
 
 # Reading speedup lines
 AALine = pd.read_csv(settings.streamAA, header=None)
@@ -45,22 +45,22 @@ HTLine = utils.createVerticalLine(HT[0],HT[1],lz,resolution,HT[2]-10)
 # Calculate mean velocity magnitude 
 u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
 
-mag = utils.calcMag(u,v,w,nx,ny,nz)
+#mag = utils.calcMag(u,v,w,nx,ny,nz)
 
 # Interpolation of non-coinciding points
-AAinfo     = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,AALine)
-Ainfo      = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,ALine)
-Binfo      = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,BLine)
-RS_info    = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,RSLine)
-HT_info    = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,HTLine)
-RS10m_info = interp.bilinearInterpolationProfile(u,v,w,dx,dy,dz,RS)
+AAinterp = interp.InterpolationLine(u,v,w,dx,dy,dz,AALine,AALine.shape[0])
+Ainterp  = interp.InterpolationLine(u,v,w,dx,dy,dz,ALine,ALine.shape[0])
+Binterp  = interp.InterpolationLine(u,v,w,dx,dy,dz,BLine,BLine.shape[0])
+RS_z     = interp.InterpolationLine(u,v,w,dx,dy,dz,RSLine,RSLine.shape[0])
+HT_z     = interp.InterpolationLine(u,v,w,dx,dy,dz,HTLine,HTLine.shape[0])
+RS10m    = interp.InterpolationPoint(u,v,w,dx,dy,dz,RS,RS.shape[0])
 
-AAinterp  = interp.trilinearInterpolation(mag,X,Y,Z,AALine)
-Ainterp   = interp.trilinearInterpolation(mag,X,Y,Z,ALine)
-Binterp   = interp.trilinearInterpolation(mag,X,Y,Z,BLine)
-RS_z      = interp.trilinearInterpolation(mag,X,Y,Z,RSLine)
-HT_z      = interp.trilinearInterpolation(mag,X,Y,Z,HTLine)
-RS10m     = interp.trilinearInterpolation(mag,X,Y,Z,RS)
+#AAinterp  = interp.trilinearInterpolation(mag,X,Y,Z,AALine)
+#Ainterp   = interp.trilinearInterpolation(mag,X,Y,Z,ALine)
+#Binterp   = interp.trilinearInterpolation(mag,X,Y,Z,BLine)
+#RS_z      = interp.trilinearInterpolation(mag,X,Y,Z,RSLine)
+#HT_z      = interp.trilinearInterpolation(mag,X,Y,Z,HTLine)
+#RS10m     = interp.trilinearInterpolation(mag,X,Y,Z,RS)
 
 # Finding absolute distance from CP to HT for AA, A, and B (Note: dir = 0 for x and 1 for y)
 abs_AAdist = utils.findAbsDist(AALine,CP,0)
