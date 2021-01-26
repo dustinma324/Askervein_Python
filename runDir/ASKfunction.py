@@ -33,9 +33,12 @@ class Settings:
     self.streamCP  = data["Streamwise"]["CP"]
 
     # Angled data
-    self.nxMesh  = data["Angled"]["Mesh"]["nx"]
-    self.nyMesh  = data["Angled"]["Mesh"]["ny"]
-    self.nzMesh  = data["Angled"]["Mesh"]["nz"]
+    self.nxMesh  = data["Angled"]["Mesh2"]["nx"]
+    self.nyMesh  = data["Angled"]["Mesh2"]["ny"]
+    self.nzMesh  = data["Angled"]["Mesh2"]["nz"]
+    self.nxMesh  = data["Angled"]["Mesh3"]["nx"]
+    self.nyMesh  = data["Angled"]["Mesh3"]["ny"]
+    self.nzMesh  = data["Angled"]["Mesh3"]["nz"]
 
     self.anglelx  = data["Angled"]["lx"]
     self.anglely  = data["Angled"]["ly"]
@@ -175,23 +178,24 @@ class Interp:
     storeVel = np.zeros((size,3))
     for i in range(size-1):
       tmp = line[i,:]
-      x1 = int(np.floor(tmp[0]/dx))
-      x2 = int(x1-1)
-      ax = tmp[0]/dx - x1
+      x1 = int(np.ceil(tmp[0]/dx))
+      x0 = int(x1-1)
+      ax = tmp[0]/dx - x0
 
-      y1 = int(np.floor(tmp[1]/dy))
-      y2 = int(y1-1)
-      ay = tmp[1]/dy - y1
+      y1 = int(np.ceil(tmp[1]/dy))
+      y0 = int(y1-1)
+      ay = tmp[1]/dy - y0
 
-      z1 = int(np.floor(tmp[2]/dz))
-      z2 = int(z1-1)
-      az = tmp[2]/dz - z1
-      print(x1,x2,y1,y2,z1,z2,ax,ay,az) # 9 elements in this
+      z1 = int(np.ceil(tmp[2]/dz))
+      z0 = int(z1-1)
+      az = tmp[2]/dz - z0
+      print(x0,x1,y0,y1,z0,z1,ax,ay,az) # 9 elements in this
 
       # linear interpolation of 3 components in 3 directions
-      storeVel[i,0] = (1.0-ax)*U[x2,y1,z1]+ax*U[x1,y1,z1]
-      storeVel[i,1] = (1.0-ay)*V[x1,y2,z1]+ay*V[x1,y1,z1]
-      storeVel[i,2] = (1.0-az)*W[x1,y1,z2]+az*W[x1,y1,z1]
+      # General : y_new = (1-a) * y0 + a * y1
+      storeVel[i,0] = (1.0-ax)*U[x0,y1,z1] + ax*U[x1,y1,z1]
+      storeVel[i,1] = (1.0-ay)*V[x1,y0,z1] + ay*V[x1,y1,z1]
+      storeVel[i,2] = (1.0-az)*W[x1,y1,z0] + az*W[x1,y1,z1]
 
     mag = np.sqrt(storeVel[:,0]**2+storeVel[:,1]**2+storeVel[:,2]**2)
     return mag
@@ -200,23 +204,23 @@ class Interp:
   def InterpolationPoint(self,U,V,W,dx,dy,dz,line,size):
     line = np.array(line)
     storeVel = np.zeros(size)
-    x1 = int(np.floor(line[0]/dx))
-    x2 = int(x1-1)
-    ax = line[0]/dx - x1
+    x1 = int(np.ceil(line[0]/dx))
+    x0 = int(x1-1)
+    ax = line[0]/dx - x0
 
-    y1 = int(np.floor(line[1]/dy))
-    y2 = int(y1-1)
-    ay = line[1]/dy - y1
+    y1 = int(np.ceil(line[1]/dy))
+    y0 = int(y1-1)
+    ay = line[1]/dy - y0
 
-    z1 = int(np.floor(line[2]/dz))
-    z2 = int(z1-1)
-    az = line[2]/dz - z1
-    print(x1,x2,y1,y2,z1,z2,ax,ay,az) # 9 elements in this
+    z1 = int(np.ceil(line[2]/dz))
+    z0 = int(z1-1)
+    az = line[2]/dz - z0
+    print(x0,x1,y0,y1,z0,z1,ax,ay,az) # 9 elements in this
 
-     # linear interpolation of 3 components in 3 directions
-    storeVel[0] = (1.0-ax)*U[x2,y1,z1]+ax*U[x1,y1,z1]
-    storeVel[1] = (1.0-ay)*V[x1,y2,z1]+ay*V[x1,y1,z1]
-    storeVel[2] = (1.0-az)*W[x1,y1,z2]+az*W[x1,y1,z1]
+    # linear interpolation of 3 components in 3 directions
+    storeVel[0] = (1.0-ax)*U[x0,y1,z1] + ax*U[x1,y1,z1]
+    storeVel[1] = (1.0-ay)*V[x1,y0,z1] + ay*V[x1,y1,z1]
+    storeVel[2] = (1.0-az)*W[x1,y1,z0] + az*W[x1,y1,z1]
 
     mag = np.sqrt(storeVel[0]**2+storeVel[1]**2+storeVel[2]**2)
     return mag
@@ -297,3 +301,10 @@ class Plots:
     plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
+
+  def plotAlongDirection(self,x,u,v,w,nx,ny,nz):
+    fig = plt.figure(); ax = plt.gca()
+    ax.plot(x[:-1],u[:-1,np.round(ny/2),np.round(nz/2)],"g-",label="U",linewidth=2)
+    ax.plot(x[:-1],v[:-1,np.round(ny/2),np.round(nz/2)],"k-",label="V",linewidth=2)
+    ax.plot(x[:-1],w[:-1,np.round(ny/2),np.round(nz/2)],"r-",label="W",linewidth=2)
+    ax.legend(loc="upper right")
