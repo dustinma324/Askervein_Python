@@ -160,10 +160,20 @@ class Utils:
     line = line[0:-2,:]
     return profile, line
 
-  def cellcenter(self,u,v,w,nx,ny,nz):
+  # cell centering the face center data
+  def cellcenter(self,u,v,w,X,Y,Z,dx,dy,dz):
+    # averaging calculating
     uCenter = 0.5*(u[1:,:,:]+u[:-1,:,:])
     vCenter = 0.5*(v[:,1:,:]+v[:,:-1,:])
     wCenter = 0.5*(w[:,:,1:]+w[:,:,:-1])
+    # adjusting so all velocity components aligne
+    uCenter = uCenter[:,1:,1:]
+    vCetner = vCenter[1:,:,1:]
+    wCenter = wCenter[1:,1:,:]
+    # shifting X,Y,Z so that it matched velocities
+    X = X[:-1]+0.5*dx
+    Y = Y[:-1]+0.5*dy
+    Z = Z[:-1]+0.5*dz
     return uCenter, vCenter, wCenter
 
 class Interp:

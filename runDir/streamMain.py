@@ -41,18 +41,19 @@ HTLine = utils.createVerticalLine(HT[0],HT[1],lz,resolution,HT[2]-10)
 
 # Calculate mean velocity magnitude 
 u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
+u, v, w = utils.cellcenter(u,v,w,X,Y,Z,dx,dy,dz)
 
 # Interpolation of non-coinciding points
-if 1:
+if 0:
   AAinterp = interp.InterpolationLine(u,v,w,dx,dy,dz,AALine,AALine.shape[0])
   Ainterp  = interp.InterpolationLine(u,v,w,dx,dy,dz,ALine,ALine.shape[0])
-#  Binterp  = interp.InterpolationLine(u,v,w,dx,dy,dz,BLine,BLine.shape[0])
-#  RS_z     = interp.InterpolationLine(u,v,w,dx,dy,dz,RSLine,RSLine.shape[0])
-#  HT_z     = interp.InterpolationLine(u,v,w,dx,dy,dz,HTLine,HTLine.shape[0])
+  Binterp  = interp.InterpolationLine(u,v,w,dx,dy,dz,BLine,BLine.shape[0])
+  RS_z     = interp.InterpolationLine(u,v,w,dx,dy,dz,RSLine,RSLine.shape[0])
+  HT_z     = interp.InterpolationLine(u,v,w,dx,dy,dz,HTLine,HTLine.shape[0])
   RS10m    = interp.InterpolationPoint(u,v,w,dx,dy,dz,RS,RS.shape[0])
 
-if 0:
-  mag = utils.calcMag(u,v,w,nx,ny,nz)
+if 1:
+  mag = utils.calcMag(u,v,w,u.shape[0],u.shape[1],u.shape[2])
   AAinterp  = interp.trilinearInterpolation(mag,X,Y,Z,AALine)
   Ainterp   = interp.trilinearInterpolation(mag,X,Y,Z,ALine)
   Binterp   = interp.trilinearInterpolation(mag,X,Y,Z,BLine)
