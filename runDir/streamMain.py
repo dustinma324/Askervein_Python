@@ -13,7 +13,7 @@ settings = Settings('namelist.json')
 
 # Setting up simulation parameters
 lx = settings.streamlx; ly = settings.streamly; lz = settings.streamlz
-nx = settings.nxMesh3; ny = settings.nyMesh3; nz = settings.nzMesh3
+nx = settings.SnxMesh3; ny = settings.SnyMesh3; nz = settings.SnzMesh3
 dx = lx/(nx-2); dy = ly/(ny-2); dz = lz/(nz-2)
 X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 resolution = nz

@@ -13,7 +13,7 @@ settings = Settings('namelist.json')
 
 # Setting up simulation parameters
 lx = settings.anglelx; ly = settings.anglely; lz = settings.anglelz
-nx = settings.nxMesh3; ny = settings.nyMesh3; nz = settings.nzMesh3
+nx = settings.AnxMesh3; ny = settings.AnyMesh3; nz = settings.AnzMesh3
 dx = lx/(nx-2); dy = ly/(ny-2); dz = lz/(nz-2)
 X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 resolution = nz
@@ -41,7 +41,7 @@ HTLine = utils.createVerticalLine(HT[0],HT[1],lz,resolution,HT[2]-10)
 
 # Calculate mean velocity magnitude 
 u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
-
+u, v, w = avg.cellcenter(u,v,w,nx,ny,nz)
 # Interpolation of non-coinciding points
 if 1:
   AAinterp = interp.InterpolationLine(u,v,w,dx,dy,dz,AALine,AALine.shape[0])
@@ -72,7 +72,7 @@ if 0:
 
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 if 1:
-# Finding absolute distance from CP to HT for AA, A, and B (Note: dir = 0 for x and 1 for y)
+  # Finding absolute distance from CP to HT for AA, A, and B (Note: dir = 0 for x and 1 for y)
   abs_AAdist = utils.findAbsDist(AALine,CP,0)
   abs_Adist  = utils.findAbsDist( ALine,HT,0)
   abs_Bdist  = utils.findAbsDist( BLine,HT,1)

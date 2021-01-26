@@ -12,19 +12,19 @@ class Settings:
       data = json.load(json_file)
 
     # Streamwise data
-    self.nxMesh2  = data["Streamwise"]["Mesh2"]["nx"]
-    self.nyMesh2  = data["Streamwise"]["Mesh2"]["ny"]
-    self.nzMesh2  = data["Streamwise"]["Mesh2"]["nz"]
-    self.nxMesh3  = data["Streamwise"]["Mesh3"]["nx"]
-    self.nyMesh3  = data["Streamwise"]["Mesh3"]["ny"]
-    self.nzMesh3  = data["Streamwise"]["Mesh3"]["nz"]
+    self.SnxMesh2  = data["Streamwise"]["Mesh2"]["nx"]
+    self.SnyMesh2  = data["Streamwise"]["Mesh2"]["ny"]
+    self.SnzMesh2  = data["Streamwise"]["Mesh2"]["nz"]
+    self.SnxMesh3  = data["Streamwise"]["Mesh3"]["nx"]
+    self.SnyMesh3  = data["Streamwise"]["Mesh3"]["ny"]
+    self.SnzMesh3  = data["Streamwise"]["Mesh3"]["nz"]
 
     self.streamlx  = data["Streamwise"]["lx"]
     self.streamly  = data["Streamwise"]["ly"]
     self.streamlz  = data["Streamwise"]["lz"]
-    self.streamU   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanU"]
-    self.streamV   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanV"]
-    self.streamW   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["MeanW"]
+    self.streamU   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanU"]
+    self.streamV   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanV"]
+    self.streamW   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanW"]
     self.streamAA  = data["Streamwise"]["AALine"]
     self.streamA   = data["Streamwise"]["ALine"]
     self.streamB   = data["Streamwise"]["BLine"]
@@ -33,19 +33,19 @@ class Settings:
     self.streamCP  = data["Streamwise"]["CP"]
 
     # Angled data
-    self.nxMesh  = data["Angled"]["Mesh2"]["nx"]
-    self.nyMesh  = data["Angled"]["Mesh2"]["ny"]
-    self.nzMesh  = data["Angled"]["Mesh2"]["nz"]
-    self.nxMesh  = data["Angled"]["Mesh3"]["nx"]
-    self.nyMesh  = data["Angled"]["Mesh3"]["ny"]
-    self.nzMesh  = data["Angled"]["Mesh3"]["nz"]
+    self.AnxMesh2  = data["Angled"]["Mesh2"]["nx"]
+    self.AnyMesh2  = data["Angled"]["Mesh2"]["ny"]
+    self.AnzMesh2  = data["Angled"]["Mesh2"]["nz"]
+    self.AnxMesh3  = data["Angled"]["Mesh3"]["nx"]
+    self.AnyMesh3  = data["Angled"]["Mesh3"]["ny"]
+    self.AnzMesh3  = data["Angled"]["Mesh3"]["nz"]
 
     self.anglelx  = data["Angled"]["lx"]
     self.anglely  = data["Angled"]["ly"]
     self.anglelz  = data["Angled"]["lz"]
-    self.angleU   = data["Angled"]["GIN3DPath"]+data["Angled"]["MeanU"]
-    self.angleV   = data["Angled"]["GIN3DPath"]+data["Angled"]["MeanV"]
-    self.angleW   = data["Angled"]["GIN3DPath"]+data["Angled"]["MeanW"]
+    self.angleU   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanU"]
+    self.angleV   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanV"]
+    self.angleW   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanW"]
     self.angleAA  = data["Angled"]["AALine"]
     self.angleA   = data["Angled"]["ALine"]
     self.angleB   = data["Angled"]["BLine"]
@@ -159,6 +159,12 @@ class Utils:
     line[:,2] = line[:,2]-z0
     line = line[0:-2,:]
     return profile, line
+
+  def cellcenter(self,u,v,w,nx,ny,nz):
+    uCenter = 0.5*(u[1:,:,:]+u[:-1,:,:])
+    vCenter = 0.5*(v[:,1:,:]+v[:,:-1,:])
+    wCenter = 0.5*(w[:,:,1:]+w[:,:,:-1])
+    return uCenter, vCenter, wCenter
 
 class Interp:
 
