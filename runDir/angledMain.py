@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from ASKfunction import Settings, Utils, Interp, Plots
+from askFunction import Settings, Utils, Interp, Plots
 
 ####################### Enviorment Setup #######################
 utils = Utils()
@@ -23,11 +23,14 @@ resolution = nz
 RS = np.array(settings.angleRS)
 HT = np.array(settings.angleHT)
 CP = np.array(settings.angleCP)
+offset = 24.7-RS[2]
 
 # Reading speedup lines
 AALine = pd.read_csv(settings.angleAA, header=None)
 ALine  = pd.read_csv(settings.angleA,  header=None)
 BLine  = pd.read_csv(settings.angleB,  header=None)
+AALine[:][2] = AALine[:][2]-offset
+ALine[:][2]  =  ALine[:][2]-offset
 
 # Reading GIN3D simulation results
 Udata = np.loadtxt(settings.angleU)
@@ -36,12 +39,12 @@ Wdata = np.loadtxt(settings.angleW)
 
 ####################### Calculations #######################
 # Creating RS and HT vertical lines
-RSLine = utils.createVerticalLine(RS[0],RS[1],lz,resolution,RS[2]-10)
-HTLine = utils.createVerticalLine(HT[0],HT[1],lz,resolution,HT[2]-10)
+RSLine = utils.createVerticalLine(RS[0],RS[1],lz-0.5*dz,resolution-1,RS[2]-10)
+HTLine = utils.createVerticalLine(HT[0],HT[1],lz-0.5*dz,resolution-1,HT[2]-10)
 
 # Calculate mean velocity magnitude 
 u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
-u, v, w = utils.cellcenter(u,v,w,X,Y,Z,dx,dy,dz)
+u, v, w, X, Y, Z = utils.cellcenter(u,v,w,X,Y,Z,dx,dy,dz)
 
 # Interpolation of non-coinciding points
 if 0:
@@ -53,7 +56,7 @@ if 0:
   RS10m    = interp.InterpolationPoint(u,v,w,dx,dy,dz,RS,RS.shape[0])
 
 if 1:
-  mag = utils.calcMag(u,v,w,u.shape[0],u.shape[1],u.shape[2])
+  mag = utils.calcMag(u,v,w,nx-1,ny-1,nz-1)
   AAinterp  = interp.trilinearInterpolation(mag,X,Y,Z,AALine)
   Ainterp   = interp.trilinearInterpolation(mag,X,Y,Z,ALine)
   Binterp   = interp.trilinearInterpolation(mag,X,Y,Z,BLine)
@@ -85,14 +88,15 @@ if 1:
 # RS and HT vs Z
 if 1:
   # Remove last two elements and arange RS and HT by height above ground
-  RS_agl, RSLine_adjusted = utils.removeLastElement(RS_z,RSLine,RS[2]-10.0)
-  HT_agl, HTLine_adjusted = utils.removeLastElement(HT_z,HTLine,HT[2]-10.0)
+  RS_agl, RSLine_adjusted = utils.removeLastElement(RS_z,RSLine,RS[2]-5.0)
+  HT_agl, HTLine_adjusted = utils.removeLastElement(HT_z,HTLine,HT[2]-5.0)
 
   # Linear interpolation of U_RS(Z') using Z_HT, for normalization of HT profile vs agl
   HT_normalize = interp.linearInterpolation(RSLine_adjusted[:,2],RS_agl,HTLine_adjusted[:,2])
 
   plots.plotRS(RS_agl,RSLine_adjusted[:,2],"RS","Mean Velocity ($ms^{-1}$)","$h_{agl}$ (m)","RSloglaw.png")
   plots.plotHT((HT_agl-HT_normalize)/HT_normalize,HTLine_adjusted[:,2],"HT","$\Delta$ S","$h_{agl}$ (m)","HTnormalized.png")
+  plots.plotLine(HT_z[:-1],HTLine[:-1,2],"HT","Mean Velocity","$h_{agl}$ (m)")
 
 # Show all figures
 plt.show()
