@@ -22,14 +22,11 @@ X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 RS = np.array(settings.angleRS)
 HT = np.array(settings.angleHT)
 CP = np.array(settings.angleCP)
-offset = 24.7-RS[2]
 
 # Reading speedup lines
 AALine = pd.read_csv(settings.angleAA, header=None)
 ALine  = pd.read_csv(settings.angleA,  header=None)
 BLine  = pd.read_csv(settings.angleB,  header=None)
-AALine[:][2] = AALine[:][2]-offset
-ALine[:][2]  =  ALine[:][2]-offset
 
 # Reading GIN3D simulation results
 Udata = np.loadtxt(settings.angleU3)
@@ -76,9 +73,9 @@ if 0:
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 if 1:
   # Finding absolute distance from CP to HT for AA, A, and B (Note: dir = 0 for x and 1 for y)
-  abs_AAdist = utils.findAbsDist(AALine,CP)
-  abs_Adist  = utils.findAbsDist( ALine,HT)
-  abs_Bdist  = utils.findAbsDist( BLine,HT)
+  abs_AAdist = utils.findAbsDist(AALine,CP,0)
+  abs_Adist  = utils.findAbsDist( ALine,HT,0)
+  abs_Bdist  = utils.findAbsDist( BLine,HT,1)
 
   plots.plotFigure(abs_AAdist,(AAinterp-RS10m)/RS10m,"AA Line","Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.png")
   plots.plotFigure(abs_Adist, ( Ainterp-RS10m)/RS10m, "A Line","Distance from HT (m)","$\Delta$ S",[-1000,1000],[-1,1],"AResults","AError","ALine.png")

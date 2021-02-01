@@ -22,14 +22,11 @@ X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
 RS = np.array(settings.streamRS)
 HT = np.array(settings.streamHT)
 CP = np.array(settings.streamCP)
-#offset = 24.7-RS[2]
 
 # Reading speedup lines
 AALine = pd.read_csv(settings.streamAA, header=None)
 ALine  = pd.read_csv(settings.streamA,  header=None)
 BLine  = pd.read_csv(settings.streamB,  header=None)
-#AALine[:][2] = AALine[:][2]-offset
-#ALine[:][2]  =  ALine[:][2]-offset
 
 # Reading GIN3D simulation results
 Udata = np.loadtxt(settings.streamU3)
