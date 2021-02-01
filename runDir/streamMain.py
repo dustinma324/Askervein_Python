@@ -16,31 +16,30 @@ lx = settings.streamlx; ly = settings.streamly; lz = settings.streamlz
 nx = settings.SnxMesh3; ny = settings.SnyMesh3; nz = settings.SnzMesh3
 dx = lx/(nx-2); dy = ly/(ny-2); dz = lz/(nz-2)
 X = np.linspace(0,lx,nx); Y = np.linspace(0,ly,ny); Z = np.linspace(0,lz,nz)
-resolution = nz
 
 ####################### Loading Field data #######################
 # Important site locations
 RS = np.array(settings.streamRS)
 HT = np.array(settings.streamHT)
 CP = np.array(settings.streamCP)
-offset = 24.7-RS[2]
+#offset = 24.7-RS[2]
 
 # Reading speedup lines
 AALine = pd.read_csv(settings.streamAA, header=None)
 ALine  = pd.read_csv(settings.streamA,  header=None)
 BLine  = pd.read_csv(settings.streamB,  header=None)
-AALine[:][2] = AALine[:][2]-offset
-ALine[:][2]  =  ALine[:][2]-offset
+#AALine[:][2] = AALine[:][2]-offset
+#ALine[:][2]  =  ALine[:][2]-offset
 
 # Reading GIN3D simulation results
-Udata = np.loadtxt(settings.streamU)
-Vdata = np.loadtxt(settings.streamV)
-Wdata = np.loadtxt(settings.streamW)
+Udata = np.loadtxt(settings.streamU3)
+Vdata = np.loadtxt(settings.streamV3)
+Wdata = np.loadtxt(settings.streamW3)
 
 ####################### Calculations #######################
 # Creating RS and HT vertical lines
-RSLine = utils.createVerticalLine(RS[0],RS[1],lz-0.5*dz,resolution-1,RS[2]-10)
-HTLine = utils.createVerticalLine(HT[0],HT[1],lz-0.5*dz,resolution-1,HT[2]-10)
+RSLine = utils.createVerticalLine(RS[0],RS[1],RS[2]-10,Z)
+HTLine = utils.createVerticalLine(HT[0],HT[1],HT[2]-10,Z)
 
 # Calculate mean velocity magnitude 
 u, v, w = utils.readMesh(Udata,Vdata,Wdata,nx,ny,nz)
