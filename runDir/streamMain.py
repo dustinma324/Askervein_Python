@@ -73,9 +73,9 @@ if 0:
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 if 1:
 # Finding absolute distance from CP to HT for AA, A, and B (Note: dir = 0 for x and 1 for y)
-  abs_AAdist = utils.findAbsDist(AALine,CP,0)
-  abs_Adist  = utils.findAbsDist( ALine,HT,0)
-  abs_Bdist  = utils.findAbsDist( BLine,HT,1)
+  abs_AAdist = utils.findAbsDistX(AALine,CP)
+  abs_Adist  = utils.findAbsDistX( ALine,HT)
+  abs_Bdist  = utils.findAbsDistX( BLine,HT)
 
   plots.plotFigure(abs_AAdist,(AAinterp-RS10m)/RS10m,"AA Line","Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.png")
   plots.plotFigure(abs_Adist, ( Ainterp-RS10m)/RS10m, "A Line","Distance from HT (m)","$\Delta$ S",[-1000,1000],[-1,1],"AResults","AError","ALine.png")

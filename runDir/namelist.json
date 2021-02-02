@@ -51,8 +51,8 @@
       "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/ALineProfileAdjust_stream.csv",
       "BLine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Streamwise/BLineProfileAdjust_stream.csv",
 
-      "RS"         : [1778.8,2716.8,24.7],
-      "HT"         : [4707.98,3157.6,145.73],
+      "RS"         : [1778.8,  2716.8,   24.7],
+      "HT"         : [4707.98, 3157.6, 145.73],
       "CP"         : [4620.2,  2765.6, 137.19]
     },
 
@@ -86,8 +86,8 @@
       "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/ALineProfileAdjust_angled.csv",
       "BLine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/BLineProfileAdjust_angled.csv",
 
-      "RS"         : [2888.789,1966.812,24.7],
-      "HT"         : [3961.96,4724.0,145.71],
+      "RS"         : [2881.537, 1970.227,   24.7],
+      "HT"         : [3962.0,     4724.0, 145.71],
       "CP"         : [4302.120, 4426.026, 137.19]
     }
 }
