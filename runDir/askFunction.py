@@ -378,3 +378,84 @@ class Plots:
     ax.plot(x[:-1],v[:-1,np.round(ny/2),np.round(nz/2)],"k-",label="V",linewidth=2)
     ax.plot(x[:-1],w[:-1,np.round(ny/2),np.round(nz/2)],"r-",label="W",linewidth=2)
     ax.legend(loc="upper right")
+
+################################# COMBINED PLOTS #################################
+  # lineplots
+  def plotFigureBoth(self,S_x,S_y,A_x,A_y,title,xtitle,ytitle,xlim,ylim,fdataname,edataname,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
+    field = utils.readField()
+    dataField = field[fdataname]; errUp = field[edataname]
+    dataX, dataU, err = utils.creatingErrorBarData(dataField,errUp)
+
+    fig = plt.figure(figsize=(12, 6)); ax = plt.gca()
+    plt.rcParams['font.size'] = '20'
+    plt.rcParams['font.family'] = 'sans-serif'
+
+    ax.plot(S_x,S_y,"g-",label="Streamwise",linewidth=2)
+    ax.plot(A_x,A_y,"r--",label="Angled",linewidth=2)
+    plt.errorbar(dataX,(dataU*8.9-8.9)/8.9,yerr=err,fmt='o',label="Field")
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
+
+    fig.savefig(settings.figurePath+filename,dpi=1200)
+
+  # RS line
+  def plotRSBoth(self,S_x,S_y,A_x,A_y,title,xtitle,ytitle,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
+    yloglaw = np.linspace(0,1000,1000)
+    roughloglaw = 0.654/0.41 * np.log(yloglaw/0.03) # Log Law used in Figure 7 (DeLeon 2018)
+
+    field = utils.readField()
+    kite = field["RSKite"]; cup = field["RSCup"]; gill = field["RSGill"]
+
+    fig = plt.figure(); ax = plt.gca()
+    plt.rcParams['font.size'] = '20'
+    plt.rcParams['font.family'] = 'sans-serif'
+
+    ax.semilogy(roughloglaw, yloglaw,"k-", label="LogLaw",linewidth=2)
+    ax.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
+    ax.semilogy(cup[:,1],cup[:,0],'.',color='b',label="Cup",markersize=12)
+    ax.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
+    ax.semilogy(S_x,S_y,"g-",label="Streamwise",linewidth=2)
+    ax.semilogy(A_x,A_y,"r--",label="Angled",linewidth=2)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    ax.legend(loc="upper left")
+    plt.xlim(0.0,20.0); plt.ylim(1e0,1e3)
+    plt.xticks(np.arange(0,20+5,5))
+
+    # inset plot
+    ax2 = plt.axes([0,0,1,1])
+    ip = InsetPosition(ax,[0.6,0.075,0.35,0.35])
+    ax2.set_axes_locator(ip)
+    ax2.semilogy(roughloglaw, yloglaw,"k-", label="LogLaw",linewidth=2)
+    ax2.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
+    ax2.semilogy(cup[:,1],cup[:,0],'.',color='b',label="Cup",markersize=12)
+    ax2.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
+    ax2.semilogy(x,y,"r-",label="GIN3D",linewidth=2)
+    ax2.set_xlim(7.0,12.0); ax2.set_ylim(3*1e0,5*1e1)
+
+    fig.savefig(settings.figurePath+filename,dpi=1200)
+
+  # HT line
+  def plotHTBoth(self,S_x,S_y,A_x,A_y,title,xtitle,ytitle,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
+    field = utils.readField()
+    dataField = field["HTResults"]
+    DS, z, err = utils.errorPropagationCalc(dataField)
+
+    fig = plt.figure(); ax = plt.gca()
+    plt.rcParams['font.size'] = '20'
+    plt.rcParams['font.family'] = 'sans-serif'
+
+    ax.plot(S_x,S_y,"g-",label="Streamwise",linewidth=2)
+    ax.plot(A_x,A_y,"r--",label="Angled",linewidth=2)
+    plt.errorbar(DS,z,xerr=err,fmt='o',label="Field")
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    ax.legend(loc="upper right")
+    plt.xlim(0.0,1.6); plt.ylim(0,100)
+    plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
+
+    fig.savefig(settings.figurePath+filename,dpi=1200)
