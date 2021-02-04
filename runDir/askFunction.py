@@ -394,9 +394,10 @@ class Plots:
 
     ax.plot(S_x,S_y,"g-",label="Streamwise",linewidth=2)
     ax.plot(A_x,A_y,"r--",label="Angled",linewidth=2)
-    plt.errorbar(dataX,(dataU*8.9-8.9)/8.9,yerr=err,fmt='o',label="Field")
+    plt.errorbar(dataX,(dataU*8.9-8.9)/8.9,yerr=err,fmt='o',label="Field Data")
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
+    ax.legend(loc="upper right")
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
 
@@ -433,7 +434,8 @@ class Plots:
     ax2.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
     ax2.semilogy(cup[:,1],cup[:,0],'.',color='b',label="Cup",markersize=12)
     ax2.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
-    ax2.semilogy(x,y,"r-",label="GIN3D",linewidth=2)
+    ax2.semilogy(S_x,S_y,"g-",label="GIN3D",linewidth=2)
+    ax2.semilogy(A_x,A_y,"r--",label="GIN3D",linewidth=2)
     ax2.set_xlim(7.0,12.0); ax2.set_ylim(3*1e0,5*1e1)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
@@ -446,7 +448,7 @@ class Plots:
     dataField = field["HTResults"]
     DS, z, err = utils.errorPropagationCalc(dataField)
 
-    fig = plt.figure(); ax = plt.gca()
+    fig = plt.figure(figsize=(8, 8)); ax = plt.gca()
     plt.rcParams['font.size'] = '20'
     plt.rcParams['font.family'] = 'sans-serif'
 
