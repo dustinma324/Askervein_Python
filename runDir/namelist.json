@@ -89,6 +89,33 @@
       "RS"         : [2881.537, 1970.227,   24.7],
       "HT"         : [3962.0,     4724.0, 145.71],
       "CP"         : [4302.120, 4426.026, 137.19]
+    },
+
+    "Dirichlet" : {
+
+      "lx"     : 8000.0,
+      "ly"     : 8000.0,
+      "lz"     : 1000.0,
+
+      "Mesh"  : {
+        "nx"     : 513,
+        "ny"     : 513,
+        "nz"     : 257,
+        "MeanU"      : "Askervein_Angled_U_mean_2041276.dat",
+        "MeanV"      : "Askervein_Angled_V_mean_2041276.dat",
+        "MeanW"      : "Askervein_Angled_W_mean_2041276.dat"
+      },
+
+      "GIN3DPath"  : "/home/dustin/Documents/tim48/GIN3D/Askervein/ASK_A_fine_Dirichlet/Askervein_Angled/",
+
+      "AALine"     : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/AALineProfileAdjust_angled.csv",
+      "ALine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/ALineProfileAdjust_angled.csv",
+      "BLine"      : "/home/dustin/Desktop/Askervein/askervein_Python/Angled/BLineProfileAdjust_angled.csv",
+
+      "RS"         : [2881.537, 1970.227,   24.7],
+      "HT"         : [3962.0,     4724.0, 145.71],
+      "CP"         : [4302.120, 4426.026, 137.19]
     }
+
 }
 

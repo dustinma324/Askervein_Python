@@ -12,22 +12,9 @@ class Settings:
       data = json.load(json_file)
 
     # Streamwise data
-    self.SnxMesh2  = data["Streamwise"]["Mesh2"]["nx"]
-    self.SnyMesh2  = data["Streamwise"]["Mesh2"]["ny"]
-    self.SnzMesh2  = data["Streamwise"]["Mesh2"]["nz"]
-    self.SnxMesh3  = data["Streamwise"]["Mesh3"]["nx"]
-    self.SnyMesh3  = data["Streamwise"]["Mesh3"]["ny"]
-    self.SnzMesh3  = data["Streamwise"]["Mesh3"]["nz"]
-
     self.streamlx  = data["Streamwise"]["lx"]
     self.streamly  = data["Streamwise"]["ly"]
     self.streamlz  = data["Streamwise"]["lz"]
-    self.streamU2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanU"]
-    self.streamV2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanV"]
-    self.streamW2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanW"]
-    self.streamU3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanU"]
-    self.streamV3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanV"]
-    self.streamW3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanW"]
     self.streamAA  = data["Streamwise"]["AALine"]
     self.streamA   = data["Streamwise"]["ALine"]
     self.streamB   = data["Streamwise"]["BLine"]
@@ -35,29 +22,52 @@ class Settings:
     self.streamHT  = data["Streamwise"]["HT"]
     self.streamCP  = data["Streamwise"]["CP"]
 
-    # Angled data
-    self.AnxMesh2  = data["Angled"]["Mesh2"]["nx"]
-    self.AnyMesh2  = data["Angled"]["Mesh2"]["ny"]
-    self.AnzMesh2  = data["Angled"]["Mesh2"]["nz"]
-    self.AnxMesh3  = data["Angled"]["Mesh3"]["nx"]
-    self.AnyMesh3  = data["Angled"]["Mesh3"]["ny"]
-    self.AnzMesh3  = data["Angled"]["Mesh3"]["nz"]
+    self.SnxMesh2  = data["Streamwise"]["Mesh2"]["nx"]
+    self.SnyMesh2  = data["Streamwise"]["Mesh2"]["ny"]
+    self.SnzMesh2  = data["Streamwise"]["Mesh2"]["nz"]
+    self.streamU2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanU"]
+    self.streamV2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanV"]
+    self.streamW2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanW"]
 
+    self.SnxMesh3  = data["Streamwise"]["Mesh3"]["nx"]
+    self.SnyMesh3  = data["Streamwise"]["Mesh3"]["ny"]
+    self.SnzMesh3  = data["Streamwise"]["Mesh3"]["nz"]
+    self.streamU3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanU"]
+    self.streamV3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanV"]
+    self.streamW3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanW"]
+
+    # Periodic data
+
+
+    # Angled (Neumann) data
     self.anglelx  = data["Angled"]["lx"]
     self.anglely  = data["Angled"]["ly"]
     self.anglelz  = data["Angled"]["lz"]
-    self.angleU2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanU"]
-    self.angleV2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanV"]
-    self.angleW2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanW"]
-    self.angleU3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanU"]
-    self.angleV3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanV"]
-    self.angleW3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanW"]
     self.angleAA  = data["Angled"]["AALine"]
     self.angleA   = data["Angled"]["ALine"]
     self.angleB   = data["Angled"]["BLine"]
     self.angleRS  = data["Angled"]["RS"]
     self.angleHT  = data["Angled"]["HT"]
     self.angleCP  = data["Angled"]["CP"]
+
+    self.AnxMesh2  = data["Angled"]["Mesh2"]["nx"]
+    self.AnyMesh2  = data["Angled"]["Mesh2"]["ny"]
+    self.AnzMesh2  = data["Angled"]["Mesh2"]["nz"]
+    self.angleU2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanU"]
+    self.angleV2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanV"]
+    self.angleW2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanW"]
+
+    self.AnxMesh3  = data["Angled"]["Mesh3"]["nx"]
+    self.AnyMesh3  = data["Angled"]["Mesh3"]["ny"]
+    self.AnzMesh3  = data["Angled"]["Mesh3"]["nz"]
+    self.angleU3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanU"]
+    self.angleV3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanV"]
+    self.angleW3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanW"]
+
+    # Angled (Dirichlet) data
+    self.dirichletU = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanU"]
+    self.dirichletV = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanV"]
+    self.dirichletW = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanW"]
 
     # ASK83 field data
     self.FD_AAR    = data["FieldData"]["Path"]+data["FieldData"]["AAResults"]
@@ -141,6 +151,21 @@ class Utils:
         for k in range(nz-1):
           mag[i,j,k] = np.sqrt(u[i,j,k]**2 + v[i,j,k]**2 + w[i,j,k]**2)
     return mag
+
+  # calculate the magnitude of the mean velocity field
+  def calcTheta(self,u,v,w,nx,ny,nz):
+    theta = np.zeros((nx,ny,nz))
+
+    for i in range(nx-1):
+      for j in range(ny-1):
+        for k in range(nz-1):
+          theta[i,j,k] = np.arctan(v[i,j,k]/u[i,j,k])
+    return theta
+
+  def adjustLines(self,line,offset):
+    tmp = line
+    tmp[:][2] = tmp[:][2]+offset
+    return tmp
 
   # finding the absolute distance to HT and CP
   def findAbsDistX(self,line,ref):
@@ -381,28 +406,28 @@ class Plots:
 
 ################################# COMBINED PLOTS #################################
   # lineplots
-  def plotFigureBoth(self,S_x,S_y,A_x,A_y,title,xtitle,ytitle,xlim,ylim,fdataname,edataname,filename):
+  def plotFigureBoth(self,S_x,S_y,A_x,A_y,xtitle,ytitle,xlim,ylim,fdataname,edataname,filename):
     utils = Utils(); settings = Settings('namelist.json')
 
     field = utils.readField()
     dataField = field[fdataname]; errUp = field[edataname]
     dataX, dataU, err = utils.creatingErrorBarData(dataField,errUp)
 
-    fig = plt.figure(figsize=(12, 6)); ax = plt.gca()
+    fig = plt.figure(figsize=(12, 7)); ax = plt.gca()
     plt.rcParams['font.size'] = '20'
     plt.rcParams['font.family'] = 'sans-serif'
 
-    ax.plot(S_x,S_y,"g-",label="Streamwise",linewidth=2)
-    ax.plot(A_x,A_y,"r--",label="Angled",linewidth=2)
     plt.errorbar(dataX,(dataU*8.9-8.9)/8.9,yerr=err,fmt='o',label="Field Data")
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    ax.plot(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
+    ax.plot(A_x,A_y,"r--",label="Angled",linewidth=3)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
     ax.legend(loc="upper right")
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
 
   # RS line
-  def plotRSBoth(self,S_x,S_y,A_x,A_y,title,xtitle,ytitle,filename):
+  def plotRSBoth(self,S_x,S_y,A_x,A_y,xtitle,ytitle,filename):
     utils = Utils(); settings = Settings('namelist.json')
 
     yloglaw = np.linspace(0,1000,1000)
@@ -411,17 +436,17 @@ class Plots:
     field = utils.readField()
     kite = field["RSKite"]; cup = field["RSCup"]; gill = field["RSGill"]
 
-    fig = plt.figure(); ax = plt.gca()
-    plt.rcParams['font.size'] = '20'
+    fig = plt.figure(figsize=(10,8)); ax = plt.gca()
+    plt.rcParams['font.size'] = '24'
     plt.rcParams['font.family'] = 'sans-serif'
 
     ax.semilogy(roughloglaw, yloglaw,"k-", label="LogLaw",linewidth=2)
     ax.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
     ax.semilogy(cup[:,1],cup[:,0],'.',color='b',label="Cup",markersize=12)
     ax.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
-    ax.semilogy(S_x,S_y,"g-",label="Streamwise",linewidth=2)
-    ax.semilogy(A_x,A_y,"r--",label="Angled",linewidth=2)
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    ax.semilogy(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
+    ax.semilogy(A_x,A_y,"r--",label="Angled",linewidth=3)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
     ax.legend(loc="upper left")
     plt.xlim(0.0,20.0); plt.ylim(1e0,1e3)
     plt.xticks(np.arange(0,20+5,5))
@@ -434,30 +459,51 @@ class Plots:
     ax2.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
     ax2.semilogy(cup[:,1],cup[:,0],'.',color='b',label="Cup",markersize=12)
     ax2.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
-    ax2.semilogy(S_x,S_y,"g-",label="GIN3D",linewidth=2)
-    ax2.semilogy(A_x,A_y,"r--",label="GIN3D",linewidth=2)
+    ax2.semilogy(S_x,S_y,"g-.",label="GIN3D",linewidth=3)
+    ax2.semilogy(A_x,A_y,"r--",label="GIN3D",linewidth=3)
     ax2.set_xlim(7.0,12.0); ax2.set_ylim(3*1e0,5*1e1)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
 
   # HT line
-  def plotHTBoth(self,S_x,S_y,A_x,A_y,title,xtitle,ytitle,filename):
+  def plotHTBoth(self,S_x,S_y,A_x,A_y,xtitle,ytitle,filename):
     utils = Utils(); settings = Settings('namelist.json')
 
     field = utils.readField()
     dataField = field["HTResults"]
     DS, z, err = utils.errorPropagationCalc(dataField)
 
-    fig = plt.figure(figsize=(8, 8)); ax = plt.gca()
-    plt.rcParams['font.size'] = '20'
+    fig = plt.figure(figsize=(10,8)); ax = plt.gca()
+    plt.rcParams['font.size'] = '24'
     plt.rcParams['font.family'] = 'sans-serif'
 
-    ax.plot(S_x,S_y,"g-",label="Streamwise",linewidth=2)
-    ax.plot(A_x,A_y,"r--",label="Angled",linewidth=2)
-    plt.errorbar(DS,z,xerr=err,fmt='o',label="Field")
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+    plt.errorbar(DS,z,xerr=err,fmt='o',label="Field Data")
+    ax.plot(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
+    ax.plot(A_x,A_y,"r--",label="Angled",linewidth=3)
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
     ax.legend(loc="upper right")
     plt.xlim(0.0,1.6); plt.ylim(0,100)
     plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
+
+    fig.savefig(settings.figurePath+filename,dpi=1200)
+
+  def plotRatioBoth(self,D_x,D_y1,D_y2,D_y3,N_x,N_y1,N_y2,N_y3,xtitle,ytitle,xlim,ylim,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
+    fig = plt.figure(figsize=(12, 7)); ax = plt.gca()
+    plt.rcParams['font.size'] = '20'
+    plt.rcParams['font.family'] = 'sans-serif'
+
+    ax.plot(D_x,D_y1,"g-.",label="D10m",linewidth=3)
+    ax.plot(D_x,D_y2,"k-.",label="D50m",linewidth=3)
+    ax.plot(D_x,D_y3,"r-.",label="D100m",linewidth=3)
+
+    ax.plot(N_x,N_y1,"g--",label="N10m",linewidth=3)
+    ax.plot(N_x,N_y2,"k--",label="N50m",linewidth=3)
+    ax.plot(N_x,N_y3,"r--",label="N100m",linewidth=3)
+
+    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
+    plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
+    ax.legend(loc="upper right")
 
     fig.savefig(settings.figurePath+filename,dpi=1200)

@@ -27,6 +27,8 @@ S_CP = np.array(settings.streamCP)
 # Reading speedup lines
 S_AALine = pd.read_csv(settings.streamAA, header=None)
 S_ALine  = pd.read_csv(settings.streamA,  header=None)
+S_AALine = utils.adjustLines(S_AALine,-1.0)
+S_ALine = utils.adjustLines(S_ALine,-1.0)
 
 # Reading GIN3D simulation results
 S_Udata = np.loadtxt(settings.streamU3)
@@ -50,6 +52,20 @@ S_RS_z      = interp.trilinearInterpolation(S_mag,S_X,S_Y,S_Z,S_RSLine)
 S_HT_z      = interp.trilinearInterpolation(S_mag,S_X,S_Y,S_Z,S_HTLine)
 S_RS10m     = interp.trilinearInterpolation(S_mag,S_X,S_Y,S_Z,S_RS)
 
+# getting ratio line at different heights
+S_theta = utils.calcTheta(S_u,S_v,S_w,S_nx-1,S_ny-1,S_nz-1)
+S_ALine_50m   = utils.adjustLines(S_ALine,40.0)
+S_ALine_100m  = utils.adjustLines(S_ALine,90.0)
+S_AALine_50m  = utils.adjustLines(S_AALine,40.0)
+S_AALine_100m = utils.adjustLines(S_AALine,90.0)
+
+S_Atheta_10m    = interp.trilinearInterpolation(S_theta,S_X,S_Y,S_Z,S_ALine)
+S_Atheta_50m    = interp.trilinearInterpolation(S_theta,S_X,S_Y,S_Z,S_ALine_50m)
+S_Atheta_100m   = interp.trilinearInterpolation(S_theta,S_X,S_Y,S_Z,S_ALine_100m)
+S_AAtheta_10m   = interp.trilinearInterpolation(S_theta,S_X,S_Y,S_Z,S_AALine)
+S_AAtheta_50m   = interp.trilinearInterpolation(S_theta,S_X,S_Y,S_Z,S_AALine_50m)
+S_AAtheta_100m = interp.trilinearInterpolation(S_theta,S_X,S_Y,S_Z,S_AALine_100m)
+
 ################################### ANGLED #####################################
 # Setting up simulation parameters
 A_lx = settings.anglelx; A_ly = settings.anglely; A_lz = settings.anglelz
@@ -66,6 +82,8 @@ A_CP = np.array(settings.angleCP)
 # Reading speedup lines
 A_AALine = pd.read_csv(settings.angleAA, header=None)
 A_ALine  = pd.read_csv(settings.angleA,  header=None)
+A_AALine = utils.adjustLines(A_AALine,-1.0)
+A_ALine = utils.adjustLines(A_ALine,-1.0)
 
 # Reading GIN3D simulation results
 A_Udata = np.loadtxt(settings.angleU3)
@@ -89,6 +107,20 @@ A_RS_z      = interp.trilinearInterpolation(A_mag,A_X,A_Y,A_Z,A_RSLine)
 A_HT_z      = interp.trilinearInterpolation(A_mag,A_X,A_Y,A_Z,A_HTLine)
 A_RS10m     = interp.trilinearInterpolation(A_mag,A_X,A_Y,A_Z,A_RS)
 
+# getting ratio line at different heights
+A_theta = utils.calcTheta(A_u,A_v,A_w,A_nx-1,A_ny-1,A_nz-1)
+A_ALine_50m   = utils.adjustLines(A_ALine,40.0)
+A_ALine_100m  = utils.adjustLines(A_ALine,90.0)
+A_AALine_50m  = utils.adjustLines(A_AALine,40.0)
+A_AALine_100m = utils.adjustLines(A_AALine,90.0)
+
+A_Atheta_10m    = interp.trilinearInterpolation(A_theta,A_X,A_Y,A_Z,A_ALine)
+A_Atheta_50m    = interp.trilinearInterpolation(A_theta,A_X,A_Y,A_Z,A_ALine_50m)
+A_Atheta_100m   = interp.trilinearInterpolation(A_theta,A_X,A_Y,A_Z,A_ALine_100m)
+A_AAtheta_10m   = interp.trilinearInterpolation(A_theta,A_X,A_Y,A_Z,A_AALine)
+A_AAtheta_50m   = interp.trilinearInterpolation(A_theta,A_X,A_Y,A_Z,A_AALine_50m)
+A_AAtheta_100m = interp.trilinearInterpolation(A_theta,A_X,A_Y,A_Z,A_AALine_100m)
+
 ############################### PLOTTING ##############################
 # AA, A, and B lines vs Distance to HT or CP (Normalized by constant RS10m)
 S_abs_AAdist = utils.findAbsDistX(S_AALine,S_CP)
@@ -96,8 +128,12 @@ S_abs_Adist  = utils.findAbsDistX( S_ALine,S_HT)
 A_abs_AAdist = utils.findAbsDist(A_AALine)
 A_abs_Adist  = utils.findAbsDist( A_ALine)
 
-plots.plotFigureBoth(S_abs_AAdist,(S_AAinterp-S_RS10m)/S_RS10m,A_abs_AAdist,(A_AAinterp-A_RS10m)/A_RS10m,"AA Line","Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.png")
-plots.plotFigureBoth(S_abs_Adist, ( S_Ainterp-S_RS10m)/S_RS10m,A_abs_Adist, ( A_Ainterp-A_RS10m)/A_RS10m, "A Line","Distance from HT (m)","$\Delta$ S",[-1000,1000],[-1,1],"AResults","AError","ALine.png")
+# A and AA Line plots
+plots.plotFigureBoth(S_abs_AAdist,(S_AAinterp-S_RS10m)/S_RS10m,A_abs_AAdist,(A_AAinterp-A_RS10m)/A_RS10m,"Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.eps")
+plots.plotFigureBoth(S_abs_Adist, ( S_Ainterp-S_RS10m)/S_RS10m,A_abs_Adist, ( A_Ainterp-A_RS10m)/A_RS10m,"Distance from HT (m)","$\Delta$ S",[-1000,1000],[-1,1],"AResults","AError","ALine.eps")
+
+plots.plotRatioBoth(S_abs_AAdist,S_AAtheta_10m,S_AAtheta_50m,S_AAtheta_100m,A_abs_AAdist,A_AAtheta_10m,A_AAtheta_50m,A_AAtheta_100m,"Distance from CP (m)","Arctan(v/u)",[-1000,1000],[-1,7],"AALineRatio.eps")
+plots.plotRatioBoth(S_abs_Adist,S_Atheta_10m,S_Atheta_50m,S_Atheta_100m,A_abs_Adist,A_Atheta_10m,A_Atheta_50m,A_Atheta_100m,"Distance from HT (m)","Arctan(v/u)",[-1000,1000],[-1,7],"ALineRatio.eps")
 
 # RS and HT vs Z
 # Remove last two elements and arange RS and HT by height above ground
@@ -110,8 +146,8 @@ A_HT_agl, A_HTLine_adjusted = utils.removeLastElement(A_HT_z,A_HTLine,A_HT[2]-10
 S_HT_normalize = interp.linearInterpolation(S_RSLine_adjusted[:,2],S_RS_agl,S_HTLine_adjusted[:,2])
 A_HT_normalize = interp.linearInterpolation(A_RSLine_adjusted[:,2],A_RS_agl,A_HTLine_adjusted[:,2])
 
-plots.plotRSBoth(S_RS_agl,S_RSLine_adjusted[:,2],A_RS_agl,A_RSLine_adjusted[:,2],"RS","Mean Velocity ($ms^{-1}$)","$h_{agl}$ (m)","RSloglaw.png")
-plots.plotHTBoth((S_HT_agl-S_HT_normalize)/S_HT_normalize,S_HTLine_adjusted[:,2],(A_HT_agl-A_HT_normalize)/A_HT_normalize,A_HTLine_adjusted[:,2],"HT","$\Delta$ S","$h_{agl}$ (m)","HTnormalized.png")
+plots.plotRSBoth(S_RS_agl,S_RSLine_adjusted[:,2],A_RS_agl,A_RSLine_adjusted[:,2],"Mean Velocity ($ms^{-1}$)","$h_{agl}$ (m)","RSloglaw.eps")
+plots.plotHTBoth((S_HT_agl-S_HT_normalize)/S_HT_normalize,S_HTLine_adjusted[:,2],(A_HT_agl-A_HT_normalize)/A_HT_normalize,A_HTLine_adjusted[:,2],"$\Delta$ S","$h_{agl}$ (m)","HTnormalized.eps")
 
 # Show all figures
 plt.show()
