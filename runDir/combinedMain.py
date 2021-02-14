@@ -132,9 +132,6 @@ A_abs_Adist  = utils.findAbsDist( A_ALine)
 plots.plotFigureBoth(S_abs_AAdist,(S_AAinterp-S_RS10m)/S_RS10m,A_abs_AAdist,(A_AAinterp-A_RS10m)/A_RS10m,"Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.eps")
 plots.plotFigureBoth(S_abs_Adist, ( S_Ainterp-S_RS10m)/S_RS10m,A_abs_Adist, ( A_Ainterp-A_RS10m)/A_RS10m,"Distance from HT (m)","$\Delta$ S",[-1000,1000],[-1,1],"AResults","AError","ALine.eps")
 
-plots.plotRatioBoth(S_abs_AAdist,S_AAtheta_10m,S_AAtheta_50m,S_AAtheta_100m,A_abs_AAdist,A_AAtheta_10m,A_AAtheta_50m,A_AAtheta_100m,"Distance from CP (m)","Arctan(v/u)",[-1000,1000],[-1,7],"AALineRatio.eps")
-plots.plotRatioBoth(S_abs_Adist,S_Atheta_10m,S_Atheta_50m,S_Atheta_100m,A_abs_Adist,A_Atheta_10m,A_Atheta_50m,A_Atheta_100m,"Distance from HT (m)","Arctan(v/u)",[-1000,1000],[-1,7],"ALineRatio.eps")
-
 # RS and HT vs Z
 # Remove last two elements and arange RS and HT by height above ground
 S_RS_agl, S_RSLine_adjusted = utils.removeLastElement(S_RS_z,S_RSLine,S_RS[2]-10.0)

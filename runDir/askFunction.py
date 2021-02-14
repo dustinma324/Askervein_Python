@@ -5,6 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from scipy import interpolate
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
+import matplotlib.font_manager
 
 class Settings:
   def __init__(self,namelist):
@@ -413,16 +414,17 @@ class Plots:
     dataField = field[fdataname]; errUp = field[edataname]
     dataX, dataU, err = utils.creatingErrorBarData(dataField,errUp)
 
-    fig = plt.figure(figsize=(12, 7)); ax = plt.gca()
-    plt.rcParams['font.size'] = '20'
-    plt.rcParams['font.family'] = 'sans-serif'
+    fig = plt.figure(figsize=(12, 8)); ax = plt.gca()
+    ft = 24
+    plt.rcParams['font.family'] = ['serif']
+    plt.rcParams['font.serif'] = ['Times New Roman']
 
     plt.errorbar(dataX,(dataU*8.9-8.9)/8.9,yerr=err,fmt='o',label="Field Data")
     ax.plot(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
     ax.plot(A_x,A_y,"r--",label="Angled",linewidth=3)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
-    ax.legend(loc="upper right")
+    ax.legend(loc="upper right",fontsize='medium')
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
 
@@ -436,9 +438,11 @@ class Plots:
     field = utils.readField()
     kite = field["RSKite"]; cup = field["RSCup"]; gill = field["RSGill"]
 
-    fig = plt.figure(figsize=(10,8)); ax = plt.gca()
-    plt.rcParams['font.size'] = '24'
-    plt.rcParams['font.family'] = 'sans-serif'
+    fig = plt.figure(figsize=(10,9)); ax = plt.gca()
+    #plt.rcParams['font.size'] = '26'
+    ft = 30
+    plt.rcParams['font.family'] = ['serif']
+    plt.rcParams['font.serif'] = ['Times New Roman']
 
     ax.semilogy(roughloglaw, yloglaw,"k-", label="LogLaw",linewidth=2)
     ax.semilogy(kite[:,1],kite[:,0],'x',color='b',label="Kite",markersize=10)
@@ -446,8 +450,8 @@ class Plots:
     ax.semilogy(gill[:,1],gill[:,0],'^',color='b',label="Gill",markersize=10)
     ax.semilogy(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
     ax.semilogy(A_x,A_y,"r--",label="Angled",linewidth=3)
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
-    ax.legend(loc="upper left")
+    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft+6)
+    ax.legend(loc="upper left",fontsize='medium')
     plt.xlim(0.0,20.0); plt.ylim(1e0,1e3)
     plt.xticks(np.arange(0,20+5,5))
 
@@ -473,15 +477,16 @@ class Plots:
     dataField = field["HTResults"]
     DS, z, err = utils.errorPropagationCalc(dataField)
 
-    fig = plt.figure(figsize=(10,8)); ax = plt.gca()
-    plt.rcParams['font.size'] = '24'
+    fig = plt.figure(figsize=(10,9)); ax = plt.gca()
+    #plt.rcParams['font.size'] = '26'
+    ft = 34
     plt.rcParams['font.family'] = 'sans-serif'
 
     plt.errorbar(DS,z,xerr=err,fmt='o',label="Field Data")
     ax.plot(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
     ax.plot(A_x,A_y,"r--",label="Angled",linewidth=3)
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
-    ax.legend(loc="upper right")
+    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft+6)
+    ax.legend(loc="upper right",fontsize='medium')
     plt.xlim(0.0,1.6); plt.ylim(0,100)
     plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
 
@@ -491,19 +496,30 @@ class Plots:
     utils = Utils(); settings = Settings('namelist.json')
 
     fig = plt.figure(figsize=(12, 7)); ax = plt.gca()
-    plt.rcParams['font.size'] = '20'
-    plt.rcParams['font.family'] = 'sans-serif'
+    #plt.rcParams['font.size'] = '20'
+    ft = 30
+    plt.rcParams['font.family'] = ['serif']
+    plt.rcParams['font.serif'] = ['Times New Roman']
 
-    ax.plot(D_x,D_y1,"g-.",label="D10m",linewidth=3)
-    ax.plot(D_x,D_y2,"k-.",label="D50m",linewidth=3)
-    ax.plot(D_x,D_y3,"r-.",label="D100m",linewidth=3)
+    norm = np.pi/3
 
-    ax.plot(N_x,N_y1,"g--",label="N10m",linewidth=3)
-    ax.plot(N_x,N_y2,"k--",label="N50m",linewidth=3)
-    ax.plot(N_x,N_y3,"r--",label="N100m",linewidth=3)
+    ax.plot(N_x,(N_y3-norm)/norm+0.5,"r--",label="N100m",linewidth=3)
+    ax.plot(D_x,(D_y3-norm)/norm+0.5,"g--",label="D100m",linewidth=3)
 
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
+    ax.plot(N_x,(N_y2-norm)/norm+0.25,"r-.",label="N50m",linewidth=3)
+    ax.plot(D_x,(D_y2-norm)/norm+0.25,"g-.",label="D50m",linewidth=3)
+
+    ax.plot(D_x,(D_y1-norm)/norm,"g-",label="D10m",linewidth=3)
+    ax.plot(N_x,(N_y1-norm)/norm,"r-",label="N10m",linewidth=3)
+
+    ax.hlines(0,-1000,1000,color='k',linestyles='dashed')
+    ax.hlines(0.25,-1000,1000,color='k',linestyles='dashed')
+    ax.hlines(0.5,-1000,1000,color='k',linestyles='dashed')
+
+    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
-    ax.legend(loc="upper right")
+    ax.legend(loc="center left",bbox_to_anchor=(1.04,0.5),borderaxespad=0,fontsize='large')
+
+    plt.subplots_adjust(right=0.85)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
