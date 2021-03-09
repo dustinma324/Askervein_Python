@@ -108,8 +108,9 @@ D_abs_Adist  = utils.findAbsDistX( D_ALine,D_HT)
 N_abs_AAdist = utils.findAbsDist(N_AALine)
 N_abs_Adist  = utils.findAbsDist( N_ALine)
 
-plots.plotRatioBoth(D_abs_AAdist,D_AAtheta_10m,D_AAtheta_50m,D_AAtheta_100m,N_abs_AAdist,N_AAtheta_10m,N_AAtheta_50m,N_AAtheta_100m,"Distance from CP (m)","(tan$^{-1}$(V/U)-rad(60))/rad(60)",[-1000,1000],[-0.1,0.6],"AALineRatio.eps")
-plots.plotRatioBoth(D_abs_Adist,D_Atheta_10m,D_Atheta_50m,D_Atheta_100m,N_abs_Adist,N_Atheta_10m,N_Atheta_50m,N_Atheta_100m,"Distance from HT (m)","(tan$^{-1}$(V/U)-rad(60))/rad(60)",[-1000,1000],[-0.1,0.6],"ALineRatio.eps")
+plots.plotRatioBoth(D_abs_Adist,D_Atheta_10m,D_Atheta_50m,D_Atheta_100m,N_abs_Adist,N_Atheta_10m,N_Atheta_50m,N_Atheta_100m,"Distance from HT (m)","Percent Error",[-1000,1000],[-5.0,5.0],"ALineRatio.eps")
+plots.plotRatioBoth(D_abs_AAdist,D_AAtheta_10m,D_AAtheta_50m,D_AAtheta_100m,N_abs_AAdist,N_AAtheta_10m,N_AAtheta_50m,N_AAtheta_100m,"Distance from CP (m)","Percent Error",[-1000,1000],[-5.0,5.0],"AALineRatio.eps")
+
 
 # Show all figures
 plt.show()

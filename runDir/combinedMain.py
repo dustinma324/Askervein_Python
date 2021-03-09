@@ -129,8 +129,9 @@ A_abs_AAdist = utils.findAbsDist(A_AALine)
 A_abs_Adist  = utils.findAbsDist( A_ALine)
 
 # A and AA Line plots
-plots.plotFigureBoth(S_abs_AAdist,(S_AAinterp-S_RS10m)/S_RS10m,A_abs_AAdist,(A_AAinterp-A_RS10m)/A_RS10m,"Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.eps")
 plots.plotFigureBoth(S_abs_Adist, ( S_Ainterp-S_RS10m)/S_RS10m,A_abs_Adist, ( A_Ainterp-A_RS10m)/A_RS10m,"Distance from HT (m)","$\Delta$ S",[-1000,1000],[-1,1],"AResults","AError","ALine.eps")
+
+plots.plotFigureBoth(S_abs_AAdist,(S_AAinterp-S_RS10m)/S_RS10m,A_abs_AAdist,(A_AAinterp-A_RS10m)/A_RS10m,"Distance from CP (m)","$\Delta$ S",[-1000,1000],[-1,1],"AAResults","AAError","AALine.eps")
 
 # RS and HT vs Z
 # Remove last two elements and arange RS and HT by height above ground
@@ -144,6 +145,7 @@ S_HT_normalize = interp.linearInterpolation(S_RSLine_adjusted[:,2],S_RS_agl,S_HT
 A_HT_normalize = interp.linearInterpolation(A_RSLine_adjusted[:,2],A_RS_agl,A_HTLine_adjusted[:,2])
 
 plots.plotRSBoth(S_RS_agl,S_RSLine_adjusted[:,2],A_RS_agl,A_RSLine_adjusted[:,2],"Mean Velocity ($ms^{-1}$)","$h_{agl}$ (m)","RSloglaw.eps")
+
 plots.plotHTBoth((S_HT_agl-S_HT_normalize)/S_HT_normalize,S_HTLine_adjusted[:,2],(A_HT_agl-A_HT_normalize)/A_HT_normalize,A_HTLine_adjusted[:,2],"$\Delta$ S","$h_{agl}$ (m)","HTnormalized.eps")
 
 # Show all figures

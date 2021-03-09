@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from scipy import interpolate
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition, mark_inset)
 import matplotlib.font_manager
@@ -415,16 +416,17 @@ class Plots:
     dataX, dataU, err = utils.creatingErrorBarData(dataField,errUp)
 
     fig = plt.figure(figsize=(12, 8)); ax = plt.gca()
-    ft = 24
+    ft = 30
     plt.rcParams['font.family'] = ['serif']
     plt.rcParams['font.serif'] = ['Times New Roman']
 
     plt.errorbar(dataX,(dataU*8.9-8.9)/8.9,yerr=err,fmt='o',label="Field Data")
     ax.plot(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
     ax.plot(A_x,A_y,"r--",label="Angled",linewidth=3)
-    ax.set_xlabel(xtitle); ax.set_ylabel(ytitle)
+    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft)
     plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
-    ax.legend(loc="upper right",fontsize='medium')
+    plt.xticks(fontsize=ft-2); plt.yticks(fontsize=ft-2)
+    ax.legend(loc="upper right",fontsize='xx-large')
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
 
@@ -439,7 +441,6 @@ class Plots:
     kite = field["RSKite"]; cup = field["RSCup"]; gill = field["RSGill"]
 
     fig = plt.figure(figsize=(10,9)); ax = plt.gca()
-    #plt.rcParams['font.size'] = '26'
     ft = 30
     plt.rcParams['font.family'] = ['serif']
     plt.rcParams['font.serif'] = ['Times New Roman']
@@ -451,9 +452,10 @@ class Plots:
     ax.semilogy(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
     ax.semilogy(A_x,A_y,"r--",label="Angled",linewidth=3)
     ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft+6)
-    ax.legend(loc="upper left",fontsize='medium')
+    ax.legend(loc="upper left",fontsize='xx-large')
     plt.xlim(0.0,20.0); plt.ylim(1e0,1e3)
     plt.xticks(np.arange(0,20+5,5))
+    plt.xticks(fontsize=ft-2); plt.yticks(fontsize=ft-2)
 
     # inset plot
     ax2 = plt.axes([0,0,1,1])
@@ -478,48 +480,60 @@ class Plots:
     DS, z, err = utils.errorPropagationCalc(dataField)
 
     fig = plt.figure(figsize=(10,9)); ax = plt.gca()
-    #plt.rcParams['font.size'] = '26'
-    ft = 34
-    plt.rcParams['font.family'] = 'sans-serif'
+    ft = 30
+    plt.rcParams['font.family'] = ['sans-serif']
+    plt.rcParams['font.serif'] = ['Times New Roman']
 
     plt.errorbar(DS,z,xerr=err,fmt='o',label="Field Data")
     ax.plot(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
     ax.plot(A_x,A_y,"r--",label="Angled",linewidth=3)
-    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft+6)
-    ax.legend(loc="upper right",fontsize='medium')
+    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft)
+    ax.legend(loc="upper right",fontsize='xx-large')
     plt.xlim(0.0,1.6); plt.ylim(0,100)
     plt.xticks(np.arange(0,1.6+0.2,0.2)); plt.yticks(np.arange(0,100+20,20))
+    plt.xticks(fontsize=ft-2); plt.yticks(fontsize=ft-2)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
 
   def plotRatioBoth(self,D_x,D_y1,D_y2,D_y3,N_x,N_y1,N_y2,N_y3,xtitle,ytitle,xlim,ylim,filename):
     utils = Utils(); settings = Settings('namelist.json')
 
-    fig = plt.figure(figsize=(12, 7)); ax = plt.gca()
-    #plt.rcParams['font.size'] = '20'
+#    fig = plt.figure(figsize=(12, 8)); ax = plt.gca()
+    fig, ax = plt.subplots(3, sharex=True, sharey=True)
     ft = 30
     plt.rcParams['font.family'] = ['serif']
     plt.rcParams['font.serif'] = ['Times New Roman']
 
     norm = np.pi/3
 
-    ax.plot(N_x,(N_y3-norm)/norm+0.5,"r--",label="N100m",linewidth=3)
-    ax.plot(D_x,(D_y3-norm)/norm+0.5,"g--",label="D100m",linewidth=3)
+    ax[0].plot(N_x,(N_y3-norm)/norm *100,"r--",linewidth=3)
+    ax[0].plot(D_x,(D_y3-norm)/norm *100,"g-.",linewidth=3)
+    ax[0].hlines(0.0,-2000,2000,color='k',linestyles='dashed')
 
-    ax.plot(N_x,(N_y2-norm)/norm+0.25,"r-.",label="N50m",linewidth=3)
-    ax.plot(D_x,(D_y2-norm)/norm+0.25,"g-.",label="D50m",linewidth=3)
+    ax[1].plot(N_x,(N_y2-norm)/norm *100,"r--",linewidth=3)
+    ax[1].plot(D_x,(D_y2-norm)/norm *100,"g-.",linewidth=3)
+    ax[1].hlines(0.0,-2000,2000,color='k',linestyles='dashed')
 
-    ax.plot(D_x,(D_y1-norm)/norm,"g-",label="D10m",linewidth=3)
-    ax.plot(N_x,(N_y1-norm)/norm,"r-",label="N10m",linewidth=3)
+    ax[2].plot(N_x,(N_y1-norm)/norm *100,"r--",linewidth=3)
+    ax[2].plot(D_x,(D_y1-norm)/norm *100,"g-.",linewidth=3)
+    ax[2].hlines(0.0,-2000,2000,color='k',linestyles='dashed')
 
-    ax.hlines(0,-1000,1000,color='k',linestyles='dashed')
-    ax.hlines(0.25,-1000,1000,color='k',linestyles='dashed')
-    ax.hlines(0.5,-1000,1000,color='k',linestyles='dashed')
+    ax[1].set_ylabel(ytitle,fontsize=ft)
+    ax[2].set_xlabel(xtitle,fontsize=ft)
 
-    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft)
-    plt.xlim(xlim[0],xlim[1]); plt.ylim(ylim[0],ylim[1])
-    ax.legend(loc="center left",bbox_to_anchor=(1.04,0.5),borderaxespad=0,fontsize='large')
+    for i in range(2):
+      ax[i].set_xlim(xlim[0],xlim[1])
+      ax[i].set_ylim(ylim[0],ylim[1])
+#    plt.legend(loc="center left",bbox_to_anchor=(1.04,0.5),borderaxespad=0,fontsize='xx-large')
 
-    plt.subplots_adjust(right=0.85)
+    neumann = mpatches.Patch(color='red', label='Neumann')
+    dirichlet = mpatches.Patch(color='green', label='Dirichlet')
+#    plt.legend(handles=[neumann,dirichlet],loc="center left",bbox_to_anchor=(1.04,0.5),borderaxespad=0,fontsize='xx-large')
+    plt.legend(handles=[neumann,dirichlet],loc="center",bbox_to_anchor=(0.5, 3.45),ncol=2,fontsize='xx-large')
+
+#    plt.subplots_adjust(top=0.1)
+    ax[0].annotate("(a)",xy=(-950,-4),weight='bold',fontsize=16)
+    ax[1].annotate("(b)",xy=(-950,-4),weight='bold',fontsize=16)
+    ax[2].annotate("(c)",xy=(-950,-4),weight='bold',fontsize=16)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
