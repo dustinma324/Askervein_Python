@@ -24,21 +24,17 @@ class Settings:
     self.streamHT  = data["Streamwise"]["HT"]
     self.streamCP  = data["Streamwise"]["CP"]
 
-    self.SnxMesh2  = data["Streamwise"]["Mesh2"]["nx"]
-    self.SnyMesh2  = data["Streamwise"]["Mesh2"]["ny"]
-    self.SnzMesh2  = data["Streamwise"]["Mesh2"]["nz"]
-    self.streamU2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanU"]
-    self.streamV2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanV"]
-    self.streamW2   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh2"]["MeanW"]
-
     self.SnxMesh3  = data["Streamwise"]["Mesh3"]["nx"]
     self.SnyMesh3  = data["Streamwise"]["Mesh3"]["ny"]
     self.SnzMesh3  = data["Streamwise"]["Mesh3"]["nz"]
-    self.streamU3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanU"]
-    self.streamV3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanV"]
-    self.streamW3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanW"]
 
-    # Periodic data
+    self.streamInstU3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["InstU"]
+    self.streamInstV3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["InstV"]
+    self.streamInstW3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["InstW"]
+
+    self.streamMeanU3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanU"]
+    self.streamMeanV3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanV"]
+    self.streamMeanW3   = data["Streamwise"]["GIN3DPath"]+data["Streamwise"]["Mesh3"]["MeanW"]
 
 
     # Angled (Neumann) data
@@ -52,69 +48,31 @@ class Settings:
     self.angleHT  = data["Angled"]["HT"]
     self.angleCP  = data["Angled"]["CP"]
 
-    self.AnxMesh2  = data["Angled"]["Mesh2"]["nx"]
-    self.AnyMesh2  = data["Angled"]["Mesh2"]["ny"]
-    self.AnzMesh2  = data["Angled"]["Mesh2"]["nz"]
-    self.angleU2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanU"]
-    self.angleV2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanV"]
-    self.angleW2   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh2"]["MeanW"]
-
     self.AnxMesh3  = data["Angled"]["Mesh3"]["nx"]
     self.AnyMesh3  = data["Angled"]["Mesh3"]["ny"]
     self.AnzMesh3  = data["Angled"]["Mesh3"]["nz"]
-    self.angleU3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanU"]
-    self.angleV3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanV"]
-    self.angleW3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanW"]
+
+    self.angleInstU3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["InstU"]
+    self.angleInstV3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["InstV"]
+    self.angleInstW3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["InstW"]
+
+    self.angleMeanU3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanU"]
+    self.angleMeanV3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanV"]
+    self.angleMeanW3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanW"]
 
     # Angled (Dirichlet) data
-    self.dirichletU = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanU"]
-    self.dirichletV = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanV"]
-    self.dirichletW = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanW"]
+    self.dirichletInstU = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["InstU"]
+    self.dirichletInstV = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["InstV"]
+    self.dirichletInstW = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["InstW"]
 
-    # ASK83 field data
-    self.FD_AAR    = data["FieldData"]["Path"]+data["FieldData"]["AAResults"]
-    self.FD_AR     = data["FieldData"]["Path"]+data["FieldData"]["AResults"]
-    self.FD_BR     = data["FieldData"]["Path"]+data["FieldData"]["BResults"]
-    self.FD_AAErr  = data["FieldData"]["Path"]+data["FieldData"]["AAError"]
-    self.FD_AErr   = data["FieldData"]["Path"]+data["FieldData"]["AError"]
-    self.FD_BErr   = data["FieldData"]["Path"]+data["FieldData"]["BError"]
-    self.FD_RSKite = data["FieldData"]["Path"]+data["FieldData"]["RSKite"]
-    self.FD_RSCup  = data["FieldData"]["Path"]+data["FieldData"]["RSCup"]
-    self.FD_RSGill = data["FieldData"]["Path"]+data["FieldData"]["RSGill"]
-    self.FD_HTR    = data["FieldData"]["Path"]+data["FieldData"]["HTField"]
+    self.dirichletMeanU = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanU"]
+    self.dirichletMeanV = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanV"]
+    self.dirichletMeanW = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["MeanW"]
 
     self.figurePath = data["FigurePath"]
 
 class Utils:
 
-  # reading field data (Do not change)
-  def readField(self):
-    settings = Settings('namelist.json')
-    aaResults = np.array(pd.read_csv(settings.FD_AAR))
-    aaErr = np.array(pd.read_csv(settings.FD_AAErr))
-    aResults = np.array(pd.read_csv(settings.FD_AR))
-    aErr = np.array(pd.read_csv(settings.FD_AErr))
-    bResults = np.array(pd.read_csv(settings.FD_BR))
-    bErr = np.array(pd.read_csv(settings.FD_BErr))
-    rsKite = np.array(pd.read_csv(settings.FD_RSKite))
-    rsCup = np.array(pd.read_csv(settings.FD_RSCup))
-    rsGill = np.array(pd.read_csv(settings.FD_RSGill))
-    htResults = np.array(pd.read_csv(settings.FD_HTR))
-
-    # Store these arrays
-    results = {
-      "AAResults" : aaResults,
-      "AResults"  : aResults,
-      "BResults"  : bResults,
-      "AAError"   : aaErr,
-      "AError"    : aErr,
-      "BError"    : bErr,
-      "RSKite"    : rsKite,
-      "RSCup"     : rsCup,
-      "RSGill"    : rsGill,
-      "HTResults" : htResults
-    }
-    return results
 
   # performing necessary calculation used for error bars for AA, A, and B line
   def creatingErrorBarData(self,dataField,errUp):
@@ -153,6 +111,21 @@ class Utils:
         for k in range(nz-1):
           mag[i,j,k] = np.sqrt(u[i,j,k]**2 + v[i,j,k]**2 + w[i,j,k]**2)
     return mag
+
+  # calculate the Turbulent intensity at RS and HT
+  def calcTI(self,u,v,w,uInst,vInst,wInst,nx,ny,nz,x,y,z,line):
+    interp = Interp();
+    Vel = np.zeros((line.shape[0],6))
+    Vel[:,0] = interp.trilinearInterpolation(uInst,x,y,z,line)
+    Vel[:,1] = interp.trilinearInterpolation(vInst,x,y,z,line)
+    Vel[:,2] = interp.trilinearInterpolation(wInst,x,y,z,line)
+    Vel[:,3] = interp.trilinearInterpolation(u,x,y,z,line)
+    Vel[:,4] = interp.trilinearInterpolation(v,x,y,z,line)
+    Vel[:,5] = interp.trilinearInterpolation(w,x,y,z,line)
+
+    TI = np.sqrt(((Vel[:,0]-Vel[:,3])**2+(Vel[:,1]-Vel[:,4])**2+(Vel[:,2]-Vel[:,5])**2)/3)/np.sqrt(Vel[:,3]**2+Vel[:,4]**2+Vel[:,5]**2)
+
+    return TI
 
   # calculate the magnitude of the mean velocity field
   def calcTheta(self,u,v,w,nx,ny,nz):
@@ -241,6 +214,26 @@ class Utils:
     Y = Y[:-1]+0.5*dy
     Z = Z[:-1]+0.5*dz
     return uCenter, vCenter, wCenter, X, Y, Z
+
+  # cell centering velocities (Part 1)
+  def cellcenterVel(self,u,v,w):
+    # averaging calculating
+    uCenter = 0.5*(u[1:,:,:]+u[:-1,:,:])
+    vCenter = 0.5*(v[:,1:,:]+v[:,:-1,:])
+    wCenter = 0.5*(w[:,:,1:]+w[:,:,:-1])
+    # adjusting so all velocity components aligne
+    uCenter = uCenter[:,1:,1:]
+    vCenter = vCenter[1:,:,1:]
+    wCenter = wCenter[1:,1:,:]
+    return uCenter, vCenter, wCenter
+
+  # cell centering the face center data
+  def cellcenterCartesian(self,X,Y,Z,dx,dy,dz):
+    # shifting X,Y,Z so that it matched velocities
+    X = X[:-1]+0.5*dx
+    Y = Y[:-1]+0.5*dy
+    Z = Z[:-1]+0.5*dz
+    return X, Y, Z
 
 class Interp:
 
@@ -507,6 +500,7 @@ class Plots:
     plt.rcParams['font.family'] = ['serif']
     plt.rcParams['font.serif'] = ['Times New Roman']
     plt.rcParams['text.usetex'] = True
+
     norm = np.pi/3
 
     ax[0].plot(N_x,(N_y3-norm)/norm *100,"r--",linewidth=3)
@@ -538,5 +532,36 @@ class Plots:
     ax[0].annotate("(a)",xy=(-950,-4),weight='bold',fontsize=16)
     ax[1].annotate("(b)",xy=(-950,-4),weight='bold',fontsize=16)
     ax[2].annotate("(c)",xy=(-950,-4),weight='bold',fontsize=16)
+
+    fig.savefig(settings.figurePath+filename,dpi=1200)
+
+  # Plotting turbulence intensity
+  def plotTI(self,ti,S_x,S_y,A_x,A_y,xtitle,ytitle,filename):
+    utils = Utils(); settings = Settings('namelist.json')
+
+    if ti == 0: #RS
+      levels = np.array([3, 5, 8, 15, 24, 34, 49])
+      U = np.array([7.10, 7.86, 8.44, 9.35, 10.19, 10.84, 11.96])
+      sigma = np.array([1.42, 1.37, 1.42, 1.27, 1.23, 1.16, 1.16])
+    elif ti == 1: #HT
+      levels = np.array([1, 3, 5, 8, 15, 24, 34])
+      U = np.array([12.99, 15.71, 16.38, 16.30, 16.63, 16.15, 15.77])
+      sigma = np.array([1.57, 1.45, 1.38, 1.17, 1.04, 1.19, 1.17])
+
+    TIdata = sigma/U
+
+    fig = plt.figure(figsize=(10,9)); ax = plt.gca()
+    ft = 30
+    plt.rcParams['font.family'] = ['serif']
+    plt.rcParams['font.serif'] = ['Times New Roman']
+    plt.rcParams['text.usetex'] = True
+
+    ax.semilogy(TIdata,levels,"x",color='k',label="Field",markersize=10)
+    ax.semilogy(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
+    ax.semilogy(A_x,A_y,"r--",label="Angled",linewidth=3)
+    ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft+6)
+    ax.legend(loc="upper left",fontsize='xx-large')
+    plt.xlim(0.0,0.3); plt.ylim(1e0,1e2)
+    plt.xticks(fontsize=ft-2); plt.yticks(fontsize=ft-2)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
