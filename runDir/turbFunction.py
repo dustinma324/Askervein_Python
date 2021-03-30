@@ -342,11 +342,11 @@ class Interp:
 class Plots:
 
   # contours
-  def plotContourf(self,data,nx,ny,nz,title,xtitle,ytitle):
+  def plotContourf(self,axis1,axis2,data,nx,ny,nz,title,xtitle,ytitle):
     utils = Utils(); settings = Settings('namelist.json')
 
     fig = plt.figure(); ax = plt.gca()
-    t = ax.contourf(data.T)
+    t = ax.contourf(axis1,axis2,data.T)
     fig.colorbar(t)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
 
