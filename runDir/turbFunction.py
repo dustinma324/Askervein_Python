@@ -60,6 +60,10 @@ class Settings:
     self.angleMeanV3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanV"]
     self.angleMeanW3   = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["MeanW"]
 
+    self.angleUU = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["uu"]
+    self.angleVV = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["vv"]
+    self.angleWW = data["Angled"]["GIN3DPath"]+data["Angled"]["Mesh3"]["ww"]
+
     # Angled (Dirichlet) data
     self.dirichletInstU = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["InstU"]
     self.dirichletInstV = data["Dirichlet"]["GIN3DPath"]+data["Dirichlet"]["Mesh"]["InstV"]
@@ -124,6 +128,41 @@ class Utils:
     Vel[:,5] = interp.trilinearInterpolation(w,x,y,z,line)
 
     TI = np.sqrt(((Vel[:,0]-Vel[:,3])**2+(Vel[:,1]-Vel[:,4])**2+(Vel[:,2]-Vel[:,5])**2)/3)/np.sqrt(Vel[:,3]**2+Vel[:,4]**2+Vel[:,5]**2)
+
+    return TI
+
+  # calculate the Turbulent intensity based on longitudinal direction
+  def calcTILong(self,u,v,uInst,vInst,x,y,z,line,theta):
+    interp = Interp();
+    Vel = np.zeros((line.shape[0],4))
+    Vel[:,0] = interp.trilinearInterpolation(uInst,x,y,z,line)
+    Vel[:,1] = interp.trilinearInterpolation(vInst,x,y,z,line)
+    Vel[:,2] = interp.trilinearInterpolation(u,x,y,z,line)
+    Vel[:,3] = interp.trilinearInterpolation(v,x,y,z,line)
+
+    InstLong = Vel[:,0]*np.cos(theta) + Vel[:,1]*np.sin(theta)
+    MeanLong = Vel[:,2]*np.cos(theta) + Vel[:,3]*np.sin(theta)
+    TI = np.sqrt((InstLong-MeanLong)**2)/MeanLong
+
+    return TI
+
+  # calculate the Turbulent intensity based on RS or HT
+  def calcTI_RS_HT_dir(self,u,v,uInst,vInst,x,y,z,line,point):
+    interp = Interp();
+    Vel = np.zeros((line.shape[0],4))
+    Vel[:,0] = interp.trilinearInterpolation(uInst,x,y,z,line)
+    Vel[:,1] = interp.trilinearInterpolation(vInst,x,y,z,line)
+    Vel[:,2] = interp.trilinearInterpolation(u,x,y,z,line)
+    Vel[:,3] = interp.trilinearInterpolation(v,x,y,z,line)
+
+    HT_UM = interp.trilinearInterpolation(u,x,y,z,point)
+    HT_VM = interp.trilinearInterpolation(v,x,y,z,point)
+
+    theta = np.arctan(HT_VM/HT_UM)
+
+    InstLong = Vel[:,0]*np.cos(theta) + Vel[:,1]*np.sin(theta)
+    MeanLong = Vel[:,2]*np.cos(theta) + Vel[:,3]*np.sin(theta)
+    TI = np.sqrt((InstLong-MeanLong)**2)/MeanLong
 
     return TI
 
@@ -303,11 +342,15 @@ class Interp:
 class Plots:
 
   # contours
-  def plotContourf(self,x,y,data,title,xtitle,ytitle):
+  def plotContourf(self,data,nx,ny,nz,title,xtitle,ytitle):
+    utils = Utils(); settings = Settings('namelist.json')
+
     fig = plt.figure(); ax = plt.gca()
-    t = ax.contourf(x,y,data)
+    t = ax.contourf(data.T)
     fig.colorbar(t)
     ax.set_xlabel(xtitle); ax.set_ylabel(ytitle); ax.set_title(title)
+
+    fig.savefig(settings.figurePath+title+'.png',dpi=600)
 
   # lineplots
   def plotFigure(self,x,y,title,xtitle,ytitle,xlim,ylim,fdataname,edataname,filename):
@@ -552,16 +595,16 @@ class Plots:
 
     fig = plt.figure(figsize=(10,9)); ax = plt.gca()
     ft = 30
-    plt.rcParams['font.family'] = ['serif']
-    plt.rcParams['font.serif'] = ['Times New Roman']
-    plt.rcParams['text.usetex'] = True
+#    plt.rcParams['font.family'] = ['serif']
+#    plt.rcParams['font.serif'] = ['Times New Roman']
+#    plt.rcParams['text.usetex'] = True
 
     ax.semilogy(TIdata,levels,"x",color='k',label="Field",markersize=10)
-    ax.semilogy(S_x,S_y,"g-.",label="Streamwise",linewidth=3)
-    ax.semilogy(A_x,A_y,"r--",label="Angled",linewidth=3)
+    ax.semilogy(S_x[1:],S_y[1:],"g*",label="Streamwise",linewidth=3)
+    ax.semilogy(A_x[1:],A_y[1:],"ro",label="Angled",linewidth=3)
     ax.set_xlabel(xtitle,fontsize=ft); ax.set_ylabel(ytitle,fontsize=ft+6)
-    ax.legend(loc="upper left",fontsize='xx-large')
-    plt.xlim(0.0,0.3); plt.ylim(1e0,1e2)
+    ax.legend(loc="upper right",fontsize='xx-large')
+    plt.xlim(0.0,0.3); plt.ylim(1e0,1e3)
     plt.xticks(fontsize=ft-2); plt.yticks(fontsize=ft-2)
 
     fig.savefig(settings.figurePath+filename,dpi=1200)
